@@ -19,19 +19,6 @@ app.get('/', (req, res) => {
 })
 
 
-app.get('/cors_proxy/:video_id', async (req, res) => {
-  request(
-    { url: "https://www.youtube.com/get_video_info?video_id=" + req.params.video_id },
-    (error, response, body) => {
-      if (error || response.statusCode !== 200) {
-        return res.status(500).json({ type: 'error', message: error.message });
-      } else {
-        res.send(body);
-      }
-    })
-  return;
-});
-
 app.get('/get_video/:video_id', async (req, res) => {
   // first we make the get_info api request to get the various streaming links
   // define an anonymus function that will wrap the request call in a promise
