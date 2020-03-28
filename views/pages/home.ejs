@@ -5,72 +5,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Youtube Reverse Search</title>
 </head>
 
 <body>
 
-    <video controls width="250" height="200" src="/get_video/YOlr79NaAtQ" id="video">
-        This browser does not support the HTML5 video element.
-    </video>
+    <div id="vid_container">
 
-    <button onclick="capture()">Capture</button>
+    </div>
+
+    <button id="capture_btn" onclick="capture()" hidden>Capture</button>
     <canvas id="canvas" style="overflow:auto"></canvas>
-    <a id="down_link" download="screenshot.png" href=""><button id="down_btn">Download Screenchot</button></a>
-
-
-    <!-- <video controls width="250" height="200" src="/get_video/YOlr79NaAtQ" id="vid">
-        This browser does not support the HTML5 video element.
-    </video> -->
+    <a id="down_link" download="screenshot.png" href=""><button id="down_btn" hidden>Download Screenchot</button></a>
 
 
     <script>
 
-        (function () {
-            window.YoutubeVideo = function (id, callback) {
-                return $.get({
-                    url: "/cors_proxy/" + id,
-                    dataType: "text"
-                }).done(function (video_info) {
-                    var video;
-                    video = YoutubeVideo.decodeQueryString(video_info);
-                    if (video.status === "fail") {
-                        return callback(video);
-                    }
-
-                    // i only need one source of the video so will choose the base 720p
-                    let def_stream = JSON.parse(video.player_response).streamingData.formats[1].url;
-                    video.def_stream = def_stream;
-
-                    return callback(video);
-                });
-            };
-            window.YoutubeVideo.decodeQueryString = function (queryString) {
-                var key, keyValPair, keyValPairs, r, val, _i, _len;
-                r = {};
-                keyValPairs = queryString.split("&");
-                for (_i = 0, _len = keyValPairs.length; _i < _len; _i++) {
-                    keyValPair = keyValPairs[_i];
-                    key = decodeURIComponent(keyValPair.split("=")[0]);
-                    val = decodeURIComponent(keyValPair.split("=")[1] || "");
-                    r[key] = val;
-                }
-                return r;
-            };
-        }).call(this);
-
-
-
-        var stream;
-
-        var youtubeID = 'YOlr79NaAtQ';
-        YoutubeVideo(youtubeID, function (video) {
-            //console.log(video);
-            //console.log("default stream at 720p: ", video.def_stream);
-
-            //$("#video").attr("src", video.def_stream);
-            stream = video.def_stream;
-        });
+        function add_video(youtubeID) {
+            // add a video containershow the capture button
+            $("#vid_container").append(
+                `<video controls width="250" height="200" src="/get_video/${youtubeID}" id="video"> 
+                    This browser does not support the HTML5 video element.
+                </video>`
+            );
+            // show the capture and the download screenshot button
+            $("#capture_btn").show(); 
+            $("#down_btn").show();
+        }
 
 
         function capture() {
@@ -84,51 +45,6 @@
                 $("#down_link").attr('href', link);
             });
         }
-
-
-        // $.get({
-        //     url: "/get_video/" + youtubeID,
-        //     //dataType: "text"
-        // }).done(function (video) {
-        //     console.log(video);
-        // });
-
-        // var vid_url;
-        // var vid_resp = $.ajax({
-        //     type: "GET",
-        //     url: "/get_video/" + youtubeID,
-        //     // xhrFields: {
-        //     //     responseType: 'blob'
-        //     // },
-        //     success: function (data) {
-        //         console.log(vid_resp.getAllResponseHeaders());
-        //         //vid_url = URL.createObjectURL(data);
-        //         console.log(vid_url);
-        //         console.log(data);
-        //         $('vid').attr('src', vid_url);
-
-        //     }
-        // });
-
-        // var req = new XMLHttpRequest();
-        // req.open('GET', "/get_video/" + youtubeID, true);
-        // req.responseType = 'blob';
-
-        // req.onload = function () {
-        //     // Onload is triggered even on 404
-        //     // so we need to check the status code
-        //     if (this.status === 200) {
-        //         var videoBlob = this.response;
-        //         var vid = URL.createObjectURL(videoBlob); // IE10+
-        //         // Video is now downloaded
-        //         // and we can set it as source on the video element
-        //         $("#vid").attr("src", vid);
-        //     }
-        // }
-        // req.onerror = function () {console.log("eror")}
-        // req.send();
-
-
 
     </script>
 </body>
