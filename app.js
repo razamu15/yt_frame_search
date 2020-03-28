@@ -1,6 +1,10 @@
 const express = require('express');
 const request = require('request');
-const util = require('util');
+
+// Imports the Google Cloud client library
+const vision = require('@google-cloud/vision');
+// Creates a client
+const gcp_client = new vision.ImageAnnotatorClient();
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -71,6 +75,82 @@ app.get('/get_video/:video_id', async (req, res) => {
       console.log(response.headers) // 'image/png'
     })
     .pipe(res);
+})
+
+
+app.get('/reverse_search', async (req, res) => {
+  // Set the request object to get the info we need from cloud vision
+  const request = {
+    image: {
+      source: {
+        filename: "./demo.png",
+      },
+    },
+    features: [
+      {
+        type: "WEB_DETECTION"
+      },
+      {
+        type: "LABEL_DETECTION"
+      }
+    ]
+  };
+
+
+  const [result] = await gcp_client.annotateImage(request);
+
+  console.log(result);
+  console.log("\n");
+
+  // google starter code for printing web annotations
+  if (true) {
+    const webDetection = result.webDetection;
+    if (webDetection.fullMatchingImages.length) {
+      console.log(
+        `Full matches found: ${webDetection.fullMatchingImages.length}`
+      );
+      webDetection.fullMatchingImages.forEach(image => {
+        console.log(`  URL: ${image.url}`);
+        console.log(`  Score: ${image.score}`);
+      });
+    }
+
+    if (webDetection.partialMatchingImages.length) {
+      console.log(
+        `Partial matches found: ${webDetection.partialMatchingImages.length}`
+      );
+      webDetection.partialMatchingImages.forEach(image => {
+        console.log(`  URL: ${image.url}`);
+        console.log(`  Score: ${image.score}`);
+      });
+    }
+
+    if (webDetection.webEntities.length) {
+      console.log(`Web entities found: ${webDetection.webEntities.length}`);
+      webDetection.webEntities.forEach(webEntity => {
+        console.log(`  Description: ${webEntity.description}`);
+        console.log(`  Score: ${webEntity.score}`);
+      });
+    }
+
+    if (webDetection.bestGuessLabels.length) {
+      console.log(
+        `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+      );
+      webDetection.bestGuessLabels.forEach(label => {
+        console.log(`  Label: ${label.label}`);
+      });
+    }
+  }
+
+})
+
+app.post('/image', (req, res) => {
+  console.log(req.headers);
+  console.log(req.data);
+  console.log(req.body);
+  console.log('Files: ', req.files);
+  res.sendStatus(200);
 })
 
 const PORT = process.env.PORT || 3000;
