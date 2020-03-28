@@ -13,7 +13,6 @@ app.use((req, res, next) => {
 
 
 
-
 app.get('/', (req, res) => {
   res.render('pages/home');
 })
@@ -60,7 +59,7 @@ app.get('/get_video/:video_id', async (req, res) => {
   }
   vid_info = parse_body(vid_info);
   // define the default stream that will be sent as the video source to our page
-  let def_stream = JSON.parse(result.player_response).streamingData.formats[1].url;
+  let def_stream = JSON.parse(vid_info.player_response).streamingData.formats[1].url;
 
   // now make the CORS proxy request for the video and pipe it to the response
   request(def_stream)
