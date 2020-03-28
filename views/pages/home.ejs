@@ -9,6 +9,11 @@
 </head>
 
 <body>
+    <form id="video_form">
+        <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s">
+        <input type="submit" value="submit">
+    </form>
+
 
     <div id="vid_container">
 
@@ -16,7 +21,9 @@
 
     <button id="capture_btn" onclick="capture()" hidden>Capture</button>
     <canvas id="canvas" style="overflow:auto"></canvas>
-    <a id="down_link" download="screenshot.png" href=""><button id="down_btn" hidden>Download Screenchot</button></a>
+    <a id="down_link" download="screenshot.png" href="">
+        <button id="down_btn" hidden>Download Screenchot</button>
+    </a>
 
 
     <script>
@@ -29,7 +36,7 @@
                 </video>`
             );
             // show the capture and the download screenshot button
-            $("#capture_btn").show(); 
+            $("#capture_btn").show();
             $("#down_btn").show();
         }
 
@@ -45,6 +52,19 @@
                 $("#down_link").attr('href', link);
             });
         }
+
+        $("#video_form").submit(function (event) {
+            // we prevent the form from making a post request
+            event.preventDefault();
+            // get the youtube_url from the form
+            let form_data = $(this).serializeArray();
+            // the form will only contain one item at index 0
+            url = form_data[0].value
+            // the first index after the split will always be youtube so we know the second is query params
+            query_params = new URLSearchParams(url.split("watch?")[1]);
+            // call the add_video function with the video id parameter retreived from the url
+            add_video(query_params.get("v"));
+        })
 
     </script>
 </body>
