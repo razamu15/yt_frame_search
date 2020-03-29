@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Youtube Reverse Search</title>
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 
 <body>
@@ -68,14 +69,13 @@
         })
 
         function send_blob(img_blob) {
-            var oReq = new XMLHttpRequest();
-            oReq.open("POST", "/reverse_search", true);
-            oReq.onload = function (oEvent) {
+            var req = new XMLHttpRequest();
+            req.open("POST", "/reverse_search", true);
+            req.onload = function (event) {
                 // Uploaded.
                 console.log("uploaded");
             };
-
-            oReq.send(img_blob);
+            req.send(img_blob);
         }
     </script>
 </body>

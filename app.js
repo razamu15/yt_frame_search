@@ -2,11 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 
-// Imports the Google Cloud client library
-const vision = require('@google-cloud/vision');
-// Creates a client
-const gcp_client = new vision.ImageAnnotatorClient();
 
+// Imports the Google Cloud client library and create the client
+const vision = require('@google-cloud/vision');
+const gcp_client = new vision.ImageAnnotatorClient();
 
 
 const app = express();
@@ -14,13 +13,21 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// define the static folder route for our css and image files
+app.use(express.static('static'));
 
-// cors proxy middleware
+// Set the cors proxy middleware for express
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   next();
 });
 
+
+// ###########################################################################
+// ---------------------------------------------------------------------------
+// ##################### APPLICATION ROUTES AND LOGIC ########################
+// ---------------------------------------------------------------------------
+// ###########################################################################
 
 
 app.get('/', (req, res) => {
@@ -98,12 +105,10 @@ app.post('/reverse_search', async (req, res) => {
       })
     })
   }
-
+  
+  // wait on the function that will read the img from the request and resolve with an array of buffers
   let img_buffers = await read_image_from_req();
   let img_src = Buffer.concat(img_buffers);
-  console.log(img_src);
-  console.log(img_src.length);
-
 
   // Set the request object to get the info we need from cloud vision
   const request = {
@@ -168,6 +173,7 @@ app.post('/reverse_search', async (req, res) => {
   }
 
 })
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
