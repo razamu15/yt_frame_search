@@ -11,7 +11,7 @@
 
 <body>
     <form id="video_form">
-        <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s">
+        <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s" required>
         <input type="submit" value="submit">
     </form>
 
@@ -19,6 +19,10 @@
     <div id="vid_container">
 
     </div>
+    <form id="time_form" hidden>
+        <input type="text" id="time_stmp" name="time_stmp" placeholder="4:43" required>
+        <input type="submit" value="Seek Time Frame">
+    </form>
 
     <button id="capture_btn" onclick="capture()" hidden>Capture</button>
     <canvas id="canvas" style="overflow:auto"></canvas>
@@ -37,9 +41,10 @@
                     This browser does not support the HTML5 video element.
                 </video>`
             );
-            // show the capture and the download screenshot button
+            // show the capture and the download screenshot button and the timestamp button
             $("#capture_btn").show();
             $("#down_btn").show();
+            $("#time_form").show();
         }
 
         function capture() {
@@ -61,7 +66,7 @@
             // get the youtube_url from the form
             let form_data = $(this).serializeArray();
             // the form will only contain one item at index 0
-            url = form_data[0].value
+            let url = form_data[0].value
             // the first index after the split will always be youtube so we know the second is query params
             query_params = new URLSearchParams(url.split("watch?")[1]);
             // call the add_video function with the video id parameter retreived from the url
@@ -77,6 +82,24 @@
             };
             req.send(img_blob);
         }
+
+        $("#time_form").submit(function (event) {
+            // we prevent the form from making a post request
+            event.preventDefault();
+            // get the time stamp from the form
+            let form_data = $(this).serializeArray();
+            // the form will only contain one item at index 0
+            let ts = form_data[0].value
+            // calculate the seconds from the timestamp
+            let times = ts.split(":");
+            let seconds = 60*parseInt(times[0]) + parseInt(times[1]);
+            // get the video element
+            //let video = $("#vid_container video");
+            let video = document.getElementById('video');
+            video.currentTime = seconds;
+            video.play();
+        })
+
     </script>
 </body>
 
