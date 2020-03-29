@@ -41,7 +41,6 @@
             $("#down_btn").show();
         }
 
-
         function capture() {
             var canvas = document.getElementById('canvas');
             var video = document.getElementById('video');
@@ -69,71 +68,16 @@
         })
 
         function send_blob(img_blob) {
+            var oReq = new XMLHttpRequest();
+            oReq.open("POST", "/reverse_search", true);
+            oReq.onload = function (oEvent) {
+                // Uploaded.
+                console.log("uploaded");
+            };
 
-            var fd = new FormData();
-            fd.append('image', img_blob);
-
-            $.ajax({
-                url: '/image',
-                data: fd,
-                contentType: false,
-                processData: false,
-                type: 'POST',
-                success: function (data) {
-                    console.log(data);
-                }
-            });
-
-
-            //var fd = new FormData();
-            //fd.append('fname', 'sc.png');
-            //fd.append('data', img_blob);
-            // $.ajax({
-            //     type: 'POST',
-            //     url: '/image/hello',
-            //     data: "wamiq",
-            //     // processData: false,
-            //     // contentType: false
-            // }).done(function (data) {
-            //     console.log(data);
-            // });
-
-            // let formData = new FormData();
-            // console.log("this blob:", img_blob);
-            // formData.append("files[]", img_blob, "img.png");
-            // formData.append("test", "test");
-            // $.ajax({
-            //     url: '/image',
-            //     type: 'POST',
-            //     data: formData,
-            //     success: function (data) {
-            //         console.log(data);
-            //     },
-            //     error: function (err) {
-            //         console.log(err);
-            //     },
-            //     cache: false,
-            //     contentType: false,
-            //     processData: false
-            // });
-
-            // var oReq = new XMLHttpRequest();
-            // oReq.open("POST", "/image", true);
-            // oReq.onload = function (oEvent) {
-            //     // Uploaded.
-            //     console.log("uploaded");
-            // };
-
-            // //var blob = new Blob(['abc123'], { type: 'text/plain' });
-
-            // oReq.send(img_blob);
+            oReq.send(img_blob);
         }
-
-
     </script>
 </body>
-
-<!-- ffmpeg command to get the 150th frame from video
-ffmpeg -i test_video.mp4 -vf "select=gte(n\, 150)" -vframes 1 ./test_image.jpg -->
 
 </html>

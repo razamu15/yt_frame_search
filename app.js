@@ -84,13 +84,31 @@ app.get('/get_video/:video_id', async (req, res) => {
 })
 
 
-app.get('/reverse_search', async (req, res) => {
+app.post('/reverse_search', async (req, res) => {
+  read_image_from_req = () => {
+    return new Promise((resolve, reject) => {
+      var image_chunks = [];
+      req.on('readable', function () {
+        let image_src = req.read();
+        if (image_src === null) {
+          resolve(image_chunks);
+        } else {
+          image_chunks.push(image_src);
+        }
+      })
+    })
+  }
+
+  let img_buffers = await read_image_from_req();
+  let img_src = Buffer.concat(img_buffers);
+  console.log(img_src);
+  console.log(img_src.length);
+
+
   // Set the request object to get the info we need from cloud vision
   const request = {
     image: {
-      source: {
-        filename: "./demo.png",
-      },
+      content: img_src
     },
     features: [
       {
@@ -151,46 +169,6 @@ app.get('/reverse_search', async (req, res) => {
 
 })
 
-app.post('/image', (req, res) => {
-  // we need to wait for the req to be readable before getting file data
-  req.on('readable', function () {
-    image_src = req.read();
-    console.log(image_src);
-
-    console.log(typeof image_src);
-
-    console.log("\n=====\n");
-
-    console.log(req.body);
-    console.log(req.headers);
-    //console.log(req.image);
-  })
-
-  // res.sendStatus(200);
-})
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
-
-
-
-
-
-//const fs = require('fs');
-// var fild;
-
-    // fs.open("./from_page.png", 'w+', function (err, fd) {
-    //   fild = fd;
-    //   if (err) {
-    //     throw 'could not open file: ' + err;
-    //   }
-    // });
-
-    // // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
-    // fs.write(fild, image_src, 0, image_src.length, null, function (err) {
-    //   if (err) throw 'error writing file: ' + err;
-    //   fs.close(fd, function () {
-    //     console.log('wrote the file successfully');
-    //   });
-    // });
