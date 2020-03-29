@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const request = require('request');
 
 // Imports the Google Cloud client library
@@ -6,8 +7,13 @@ const vision = require('@google-cloud/vision');
 // Creates a client
 const gcp_client = new vision.ImageAnnotatorClient();
 
+
+
 const app = express();
+// define expres middleware
 app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // cors proxy middleware
 app.use((req, res, next) => {
@@ -31,7 +37,7 @@ app.get('/get_video/:video_id', async (req, res) => {
         { url: "https://www.youtube.com/get_video_info?video_id=" + video_id },
         (error, response, body) => {
           if (error || response.statusCode !== 200) {
-            reject("info api call failes")
+            reject("info api call failed")
           } else {
             resolve(body);
           }
@@ -44,7 +50,7 @@ app.get('/get_video/:video_id', async (req, res) => {
   try {
     vid_info = await get_video_info(req.params.video_id);
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return res.status(500).json({ type: 'error', message: error.message });
   }
 
@@ -71,8 +77,8 @@ app.get('/get_video/:video_id', async (req, res) => {
       console.error(error)
     })
     .on('response', function (response) {
-      console.log("\n" + response.statusCode) // 200
-      console.log(response.headers) // 'image/png'
+      //console.log("\n" + response.statusCode) // 200
+      //console.log(response.headers) // 'image/png'
     })
     .pipe(res);
 })
@@ -96,14 +102,14 @@ app.get('/reverse_search', async (req, res) => {
     ]
   };
 
-
+  // call the cloud vision api
   const [result] = await gcp_client.annotateImage(request);
 
   console.log(result);
   console.log("\n");
 
   // google starter code for printing web annotations
-  if (true) {
+  if (false) {
     const webDetection = result.webDetection;
     if (webDetection.fullMatchingImages.length) {
       console.log(
@@ -146,12 +152,45 @@ app.get('/reverse_search', async (req, res) => {
 })
 
 app.post('/image', (req, res) => {
-  console.log(req.headers);
-  console.log(req.data);
-  console.log(req.body);
-  console.log('Files: ', req.files);
-  res.sendStatus(200);
+  // we need to wait for the req to be readable before getting file data
+  req.on('readable', function () {
+    image_src = req.read();
+    console.log(image_src);
+
+    console.log(typeof image_src);
+
+    console.log("\n=====\n");
+
+    console.log(req.body);
+    console.log(req.headers);
+    //console.log(req.image);
+  })
+
+  // res.sendStatus(200);
 })
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
+
+
+
+
+
+
+//const fs = require('fs');
+// var fild;
+
+    // fs.open("./from_page.png", 'w+', function (err, fd) {
+    //   fild = fd;
+    //   if (err) {
+    //     throw 'could not open file: ' + err;
+    //   }
+    // });
+
+    // // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
+    // fs.write(fild, image_src, 0, image_src.length, null, function (err) {
+    //   if (err) throw 'error writing file: ' + err;
+    //   fs.close(fd, function () {
+    //     console.log('wrote the file successfully');
+    //   });
+    // });

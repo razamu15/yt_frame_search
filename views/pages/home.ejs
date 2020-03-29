@@ -69,15 +69,31 @@
         })
 
         function send_blob(img_blob) {
-            // var fd = new FormData();
-            // fd.append('fname', 'sc.png');
-            // fd.append('data', img_blob);
+
+            var fd = new FormData();
+            fd.append('image', img_blob);
+
+            $.ajax({
+                url: '/image',
+                data: fd,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
+
+            //var fd = new FormData();
+            //fd.append('fname', 'sc.png');
+            //fd.append('data', img_blob);
             // $.ajax({
             //     type: 'POST',
-            //     url: '/image',
-            //     data: fd,
-            //     processData: false,
-            //     contentType: false
+            //     url: '/image/hello',
+            //     data: "wamiq",
+            //     // processData: false,
+            //     // contentType: false
             // }).done(function (data) {
             //     console.log(data);
             // });
@@ -101,16 +117,16 @@
             //     processData: false
             // });
 
-            var oReq = new XMLHttpRequest();
-            oReq.open("POST", "/image", true);
-            oReq.onload = function (oEvent) {
-                // Uploaded.
-                console.log("uploaded");
-            };
+            // var oReq = new XMLHttpRequest();
+            // oReq.open("POST", "/image", true);
+            // oReq.onload = function (oEvent) {
+            //     // Uploaded.
+            //     console.log("uploaded");
+            // };
 
-            //var blob = new Blob(['abc123'], { type: 'text/plain' });
+            // //var blob = new Blob(['abc123'], { type: 'text/plain' });
 
-            oReq.send(img_blob);
+            // oReq.send(img_blob);
         }
 
 
