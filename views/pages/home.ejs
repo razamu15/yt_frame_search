@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Youtube Reverse Search</title>
@@ -15,7 +14,7 @@
     <div id="video_form_cont">
         <form id="video_form">
             <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s"
-                required>
+                pattern="https:\/\/www\.youtube\.com\/watch\?v=[a-zA-z0-9]{11}.*" required>
             <input type="submit" value="submit">
         </form>
     </div>
@@ -60,7 +59,7 @@
 
     </div>
 
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         var img_blob;
 
@@ -86,6 +85,11 @@
                     This browser does not support the HTML5 video element.
                 </video>`
             );
+
+            // TODO: set an event handler on video for error playback thingy so that 
+            // when a failed get info call(either by server itself or livestream or by incorrect vid) from the backend comes,
+            // we can say that something went wrong to the user
+
             // show the capture screenshot controls
             $("#screen_capture_ctrls").show();
         }
@@ -114,13 +118,17 @@
             // pause the video before we do anything so that the scene doesnt shift
             let video = document.getElementById('video');
             video.pause();
+
+            // TODO: set canvas to loading
+
+
             // get the form input and see which option user picked
             let form_data = $(this).serializeArray();
 
             let frame_src = form_data.find(function (obj) {
                 return obj.name === "frame_source";
             }).value;
-            
+
             // if the capture is by timestamp we need to seek the video to that time
             if (frame_src === "timestamp") {
                 // get the timestamp value from the from
@@ -158,6 +166,7 @@
             } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
                 // enable the time stamp text input field
                 $('#time_stamp').attr('disabled', false);
+                $('#time_stamp').attr('required', true);
             }
         }
 

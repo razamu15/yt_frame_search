@@ -60,23 +60,13 @@ app.get('/get_video/:video_id', async (req, res) => {
     console.log(error);
     return res.status(500).json({ type: 'error', message: error.message });
   }
+  
+  vid_info = new URLSearchParams(vid_info);
+  let vid_streams = JSON.parse(vid_info.get("player_response"));
 
-  // now define an anonmous funcion that will parse the body of the api response and call it
-  parse_body = (body) => {
-    var key, keyValPair, keyValPairs, r, val, _i, _len;
-    r = {};
-    keyValPairs = body.split("&");
-    for (_i = 0, _len = keyValPairs.length; _i < _len; _i++) {
-      keyValPair = keyValPairs[_i];
-      key = decodeURIComponent(keyValPair.split("=")[0]);
-      val = decodeURIComponent(keyValPair.split("=")[1] || "");
-      r[key] = val;
-    }
-    return r;
-  }
-  vid_info = parse_body(vid_info);
   // define the default stream that will be sent as the video source to our page
-  let def_stream = JSON.parse(vid_info.player_response).streamingData.formats[1].url;
+  let def_stream = vid_streams.streamingData.formats[1].url;
+  console.log(def_stream);
 
   // now make the CORS proxy request for the video and pipe it to the response
   request(def_stream)
@@ -105,7 +95,7 @@ app.post('/reverse_search', async (req, res) => {
       })
     })
   }
-  
+
   // wait on the function that will read the img from the request and resolve with an array of buffers
   let img_buffers = await read_image_from_req();
   let img_src = Buffer.concat(img_buffers);
@@ -174,15 +164,20 @@ app.post('/reverse_search', async (req, res) => {
 
 })
 
+app.get('/vid', (req, res) => {
+  const x = request('https://r4---sn-gvbxgn-tt1e7.googlevideo.com/videoplayback?expire=1585718912&ei=H9KDXrSaO4bRwQGhspuYAg&ip=99.227.111.12&id=o-AEjHm5iE7Z-PsWdp3l6OFbpU2ElC2ooycmaha8gA7C9v&itag=22&source=youtube&requiressl=yes&mh=Xa&mm=31%2C26&mn=sn-gvbxgn-tt1e7%2Csn-vgqsrnll&ms=au%2Conr&mv=m&mvi=3&pl=16&initcwndbps=1908750&vprv=1&mime=video%2Fmp4&ratebypass=yes&dur=234.893&lmt=1574983179340582&mt=1585697193&fvip=4&fexp=23882514&c=WEB&txp=5535432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cratebypass%2Cdur%2Clmt&sig=ADKhkGMwRQIhAL7x1KHU0DlTDVMIpRiLrJzSSgKoYnP1EYRy_ljsiyoZAiBl6zlDSUc_GW17ctJ_u5KtuP_J-MgvhXbdE1vh9GPmKQ%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABSNjpQwRgIhALzoEVssNK1u6RcnjNfLA9R3kSQPPGA6QZuJq8YUY-NSAiEA-myqPJRkl9BZXUKjE5iLXOllFGQSXmJ0_uEG3GpaBds%3D');
+  req.pipe(x);
+  x.pipe(resp);
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
 /**
  * security 1:=  generate a unique key for each get on '/' and set that as the query param for image search api call. validate the incoming key param on image search route against the generated set of keys
- * 
+ *
  * caching 1:=  video id: streaming link -> to prevent making the get infor api call repeatedly. will work for the same user skipping ahead or multiple users uaing same video
  * caching 2:=  implement the persistent key storage from secutity 1 ;; this will also need a cache expiration so the same key cant be used many times
- * 
- * optimization 1:=  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
+ *
+ * optimization 1:=  DONE - replaced with URLsearchparams  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
  * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality */
