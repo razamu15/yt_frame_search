@@ -10,55 +10,58 @@
 </head>
 
 <body>
-    <form id="video_form">
-        <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s" required>
-        <input type="submit" value="submit">
-    </form>
+    <nav id="navbar"></nav>
 
+    <div id="video_form_cont">
+        <form id="video_form">
+            <input type="text" id="yt_url" name="yt_url" placeholder="https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s"
+                required>
+            <input type="submit" value="submit">
+        </form>
+    </div>
 
-    <div id="vid_container">
+    <div id="video_cont">
 
     </div>
-    <form id="time_form" hidden>
-        <input type="text" id="time_stmp" name="time_stmp" placeholder="4:43" required>
-        <input type="submit" value="Seek Time Frame">
-    </form>
 
-    <button id="capture_btn" onclick="capture()" hidden>Capture</button>
-    <canvas id="canvas" style="overflow:auto"></canvas>
-    <a id="down_link" download="screenshot.png" href="">
-        <button id="down_btn" hidden>Download Screenchot</button>
-    </a>
+    <div id="screen_capture_ctrls" hidden>
+        <form id="screen_capture_form">
+            <div id="from_video_checkbox">
+                <input type="radio" id="from_video" name="frame_source" value="current" onclick="toggle_ts(this)"
+                    checked>
+                <label for="from_video">From Current Video Screen</label>
+            </div>
+            <div id="ts_input_cont">
+                <div id="from_ts_checkbox">
+                    <input type="radio" id="from_ts" name="frame_source" value="timestamp" onclick="toggle_ts(this)">
+                    <label for="from_ts">From Timestamp: </label>
+                </div>
+                <input type="text" id="time_stamp" name="time_stamp" placeholder="ex. 4:43" pattern="[0-9]{1,2}:[0-5][0-9]" maxlength="5" disabled>
+            </div>
+            <input type="submit" value="Capture Video Screen">
+        </form>
+    </div>
+
+
+
+    <div id="canvas_container">
+        <canvas id="canvas" style="overflow:auto"></canvas>
+    </div>
+
+    <div id="screen_shot_ctrls" hidden>
+        <a id="down_link" download="screenshot.png" href="">
+            <button id="down_btn">Download Screenchot</button>
+        </a>
+
+        <a id="search_link" onclick="">
+            <button id="search_btn">Analyze Screenchot</button>
+        </a>
+
+    </div>
 
 
     <script>
         var img_blob;
-
-        function add_video(youtubeID) {
-            // add a video containershow the capture button
-            $("#vid_container").append(
-                `<video controls width="250" height="200" src="/get_video/${youtubeID}" id="video"> 
-                    This browser does not support the HTML5 video element.
-                </video>`
-            );
-            // show the capture and the download screenshot button and the timestamp button
-            $("#capture_btn").show();
-            $("#down_btn").show();
-            $("#time_form").show();
-        }
-
-        function capture() {
-            var canvas = document.getElementById('canvas');
-            var video = document.getElementById('video');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-            canvas.toBlob((blob) => {
-                img_blob = blob;
-                link = (window.URL ? URL : webkitURL).createObjectURL(blob);
-                $("#down_link").attr('href', link);
-            });
-        }
 
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
@@ -73,6 +76,87 @@
             add_video(query_params.get("v"));
         })
 
+        function add_video(youtubeID) {
+            // first empty the container in case if there is already a video there
+            $("#video_cont").empty();
+            // add a video containershow the capture button
+            $("#video_cont").append(
+                `<video controls width="250" height="200" src="/get_video/${youtubeID}" id="video"> 
+                    This browser does not support the HTML5 video element.
+                </video>`
+            );
+            // show the capture screenshot controls
+            $("#screen_capture_ctrls").show();
+        }
+
+        $("#screen_capture_form").submit(function (event) {
+            // stop the form from making a post request
+            event.preventDefault();
+            // get the form input and see which option user picked
+            let form_data = $(this).serializeArray();
+
+            let frame_src = form_data.find(function (obj) {
+                return obj.name === "frame_source";
+            }).value;
+
+            let video = document.getElementById('video');
+            // if the capture is by timestamp we need to seek the video to that time
+            if (frame_src === "timestamp") {
+                // get the timestamp value from the from
+                let ts = form_data.find(function (obj) {
+                    return obj.name === "time_stamp";
+                }).value;
+                // calculate the seconds from the timestamp
+                let times = ts.split(":");
+                let total_seconds = 60 * parseInt(times[0]) + parseInt(times[1]);
+                // make sure the seek time is the valid range
+                if ( total_seconds < 0 || total_seconds > video.duration) {
+                    // alert the user saying timestamp is not valid
+                    alert("Timestamp not valid");
+                    return;
+                }
+                // pause the video before we seek
+                video.pause();
+                video.currentTime = total_seconds;
+            }
+
+
+            // TODO: STILL NEEDS TO BE DONE
+            // screenshot not being taken at current because the event is ntoo fired when the video is already playing
+            // fix by calling the draw frame function outside here whhc means defining it byitself
+
+            // now we add an event listener that will draw on the canvas once the video has loaded the needed frame
+            video.addEventListener('canplay', function draw_frame(event) {
+                // remove the event listener immediately because we only want to do this once
+                video.removeEventListener('canplay', draw_frame);
+                // get the video and draw its current frame onto the canvas
+                let canvas = document.getElementById('canvas');
+                //let video = document.getElementById('video');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                // convert the image from the canvas to a blob
+                canvas.toBlob((blob) => {
+                    img_blob = blob;
+                    link = (window.URL ? URL : webkitURL).createObjectURL(blob);
+                    $("#down_link").attr('href', link);
+                });
+                // show the download screenshot and reverse search buttons once we have the image drawn
+                $("#screen_shot_ctrls").show();
+            });
+
+        })
+
+        function toggle_ts(radio_ele) {
+            if (radio_ele.value === "current" && radio_ele.checked) {
+                // disable the time stamp text input field
+                $('#time_stamp').attr('disabled', true);
+            } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
+                // enable the time stamp text input field
+                $('#time_stamp').attr('disabled', false);
+            }
+        }
+
         function send_blob(img_blob) {
             var req = new XMLHttpRequest();
             req.open("POST", "/reverse_search", true);
@@ -82,23 +166,6 @@
             };
             req.send(img_blob);
         }
-
-        $("#time_form").submit(function (event) {
-            // we prevent the form from making a post request
-            event.preventDefault();
-            // get the time stamp from the form
-            let form_data = $(this).serializeArray();
-            // the form will only contain one item at index 0
-            let ts = form_data[0].value
-            // calculate the seconds from the timestamp
-            let times = ts.split(":");
-            let seconds = 60*parseInt(times[0]) + parseInt(times[1]);
-            // get the video element
-            //let video = $("#vid_container video");
-            let video = document.getElementById('video');
-            video.currentTime = seconds;
-            video.play();
-        })
 
     </script>
 </body>
