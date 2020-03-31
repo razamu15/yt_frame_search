@@ -36,7 +36,8 @@
                     <input type="radio" id="from_ts" name="frame_source" value="timestamp" onclick="toggle_ts(this)">
                     <label for="from_ts">From Timestamp: </label>
                 </div>
-                <input type="text" id="time_stamp" name="time_stamp" placeholder="ex. 4:43" pattern="[0-9]{1,2}:[0-5][0-9]" maxlength="5" disabled>
+                <input type="text" id="time_stamp" name="time_stamp" placeholder="ex. 4:43"
+                    pattern="[0-9]{1,2}:[0-5][0-9]" maxlength="5" disabled>
             </div>
             <input type="submit" value="Capture Video Screen">
         </form>
@@ -89,17 +90,37 @@
             $("#screen_capture_ctrls").show();
         }
 
+        function draw_frame() {
+            // get the video and draw its current frame onto the canvas
+            let canvas = document.getElementById('canvas');
+            let video = document.getElementById('video');
+            //let video = document.getElementById('video');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            // convert the image from the canvas to a blob
+            canvas.toBlob((blob) => {
+                img_blob = blob;
+                link = (window.URL ? URL : webkitURL).createObjectURL(blob);
+                $("#down_link").attr('href', link);
+            });
+            // show the download screenshot and reverse search buttons once we have the image drawn
+            $("#screen_shot_ctrls").show();
+        }
+
         $("#screen_capture_form").submit(function (event) {
             // stop the form from making a post request
             event.preventDefault();
+            // pause the video before we do anything so that the scene doesnt shift
+            let video = document.getElementById('video');
+            video.pause();
             // get the form input and see which option user picked
             let form_data = $(this).serializeArray();
 
             let frame_src = form_data.find(function (obj) {
                 return obj.name === "frame_source";
             }).value;
-
-            let video = document.getElementById('video');
+            
             // if the capture is by timestamp we need to seek the video to that time
             if (frame_src === "timestamp") {
                 // get the timestamp value from the from
@@ -108,43 +129,26 @@
                 }).value;
                 // calculate the seconds from the timestamp
                 let times = ts.split(":");
+                // the parseint calls are safe because of the regex pattern on the timestamp input field
                 let total_seconds = 60 * parseInt(times[0]) + parseInt(times[1]);
                 // make sure the seek time is the valid range
-                if ( total_seconds < 0 || total_seconds > video.duration) {
+                if (total_seconds < 0 || total_seconds > video.duration) {
                     // alert the user saying timestamp is not valid
                     alert("Timestamp not valid");
                     return;
                 }
-                // pause the video before we seek
-                video.pause();
                 video.currentTime = total_seconds;
-            }
-
-
-            // TODO: STILL NEEDS TO BE DONE
-            // screenshot not being taken at current because the event is ntoo fired when the video is already playing
-            // fix by calling the draw frame function outside here whhc means defining it byitself
-
-            // now we add an event listener that will draw on the canvas once the video has loaded the needed frame
-            video.addEventListener('canplay', function draw_frame(event) {
-                // remove the event listener immediately because we only want to do this once
-                video.removeEventListener('canplay', draw_frame);
-                // get the video and draw its current frame onto the canvas
-                let canvas = document.getElementById('canvas');
-                //let video = document.getElementById('video');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                // convert the image from the canvas to a blob
-                canvas.toBlob((blob) => {
-                    img_blob = blob;
-                    link = (window.URL ? URL : webkitURL).createObjectURL(blob);
-                    $("#down_link").attr('href', link);
+                // when we capture by timestamp, we need to set an event lsitener that will make the call to draw frame 
+                // so we draw the correct frame when the data after the seek has been loaded in the video
+                video.addEventListener('canplay', function drawing_event(event) {
+                    // remove the event listener immediately because we only want to do this once
+                    video.removeEventListener('canplay', drawing_event);
+                    draw_frame();
                 });
-                // show the download screenshot and reverse search buttons once we have the image drawn
-                $("#screen_shot_ctrls").show();
-            });
-
+            } else {
+                // frame_src === "current"
+                draw_frame();
+            }
         })
 
         function toggle_ts(radio_ele) {
