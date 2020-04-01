@@ -57,27 +57,19 @@ app.get('/get_video/:video_id', async (req, res) => {
   try {
     vid_info = await get_video_info(req.params.video_id);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ type: 'error', message: error.message });
   }
   
   vid_info = new URLSearchParams(vid_info);
   let vid_streams = JSON.parse(vid_info.get("player_response"));
-
-  // define the default stream that will be sent as the video source to our page
   let def_stream = vid_streams.streamingData.formats[1].url;
-  console.log(def_stream);
 
-  // now make the CORS proxy request for the video and pipe it to the response
-  request(def_stream)
-    .on('error', function (error) {
-      console.error(error)
-    })
-    .on('response', function (response) {
-      //console.log("\n" + response.statusCode) // 200
-      //console.log(response.headers) // 'image/png'
-    })
-    .pipe(res);
+  // we  make the call for the video using the double pipe so that its basically
+  // the same as calling the original but w/o the CORS
+  const x = request(def_stream);
+  req.pipe(x);
+  x.pipe(res);
 })
 
 
@@ -117,57 +109,8 @@ app.post('/reverse_search', async (req, res) => {
 
   // call the cloud vision api
   const [result] = await gcp_client.annotateImage(request);
-
-  console.log(result);
-  console.log("\n");
-
-  // google starter code for printing web annotations
-  if (false) {
-    const webDetection = result.webDetection;
-    if (webDetection.fullMatchingImages.length) {
-      console.log(
-        `Full matches found: ${webDetection.fullMatchingImages.length}`
-      );
-      webDetection.fullMatchingImages.forEach(image => {
-        console.log(`  URL: ${image.url}`);
-        console.log(`  Score: ${image.score}`);
-      });
-    }
-
-    if (webDetection.partialMatchingImages.length) {
-      console.log(
-        `Partial matches found: ${webDetection.partialMatchingImages.length}`
-      );
-      webDetection.partialMatchingImages.forEach(image => {
-        console.log(`  URL: ${image.url}`);
-        console.log(`  Score: ${image.score}`);
-      });
-    }
-
-    if (webDetection.webEntities.length) {
-      console.log(`Web entities found: ${webDetection.webEntities.length}`);
-      webDetection.webEntities.forEach(webEntity => {
-        console.log(`  Description: ${webEntity.description}`);
-        console.log(`  Score: ${webEntity.score}`);
-      });
-    }
-
-    if (webDetection.bestGuessLabels.length) {
-      console.log(
-        `Best guess labels found: ${webDetection.bestGuessLabels.length}`
-      );
-      webDetection.bestGuessLabels.forEach(label => {
-        console.log(`  Label: ${label.label}`);
-      });
-    }
-  }
-
-})
-
-app.get('/vid', (req, res) => {
-  const x = request('https://r4---sn-gvbxgn-tt1e7.googlevideo.com/videoplayback?expire=1585718912&ei=H9KDXrSaO4bRwQGhspuYAg&ip=99.227.111.12&id=o-AEjHm5iE7Z-PsWdp3l6OFbpU2ElC2ooycmaha8gA7C9v&itag=22&source=youtube&requiressl=yes&mh=Xa&mm=31%2C26&mn=sn-gvbxgn-tt1e7%2Csn-vgqsrnll&ms=au%2Conr&mv=m&mvi=3&pl=16&initcwndbps=1908750&vprv=1&mime=video%2Fmp4&ratebypass=yes&dur=234.893&lmt=1574983179340582&mt=1585697193&fvip=4&fexp=23882514&c=WEB&txp=5535432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cratebypass%2Cdur%2Clmt&sig=ADKhkGMwRQIhAL7x1KHU0DlTDVMIpRiLrJzSSgKoYnP1EYRy_ljsiyoZAiBl6zlDSUc_GW17ctJ_u5KtuP_J-MgvhXbdE1vh9GPmKQ%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=ABSNjpQwRgIhALzoEVssNK1u6RcnjNfLA9R3kSQPPGA6QZuJq8YUY-NSAiEA-myqPJRkl9BZXUKjE5iLXOllFGQSXmJ0_uEG3GpaBds%3D');
-  req.pipe(x);
-  x.pipe(resp);
+  // return the vision api call straight to the browser
+  res.send(result);
 })
 
 const PORT = process.env.PORT || 3000;
@@ -181,3 +124,5 @@ app.listen(PORT, () => console.log(`listening on ${PORT}`));
  *
  * optimization 1:=  DONE - replaced with URLsearchparams  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
  * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality */
+
+ // export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json"
