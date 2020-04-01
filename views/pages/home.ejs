@@ -56,16 +56,24 @@
         <a id="search_link" onclick="">
             <button id="search_btn">Analyze Screenchot</button>
         </a>
-
     </div>
+
+    <div id="analysis"></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        var img_blob;
+        var vision_key = JSON.stringify();
+        var img_blob = null;
 
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
             event.preventDefault();
+            
+            // empty the divs and canvas in case content from a previous user action is there
+            let canvas = document.getElementById('canvas');
+            canvas.getContext('2d').clearRect(0,0,canvas.width, canvas.height);
+            $("#analysis").empty();
+
             // get the youtube_url from the form
             let form_data = $(this).serializeArray();
             // the form will only contain one item at index 0
@@ -115,6 +123,8 @@
         $("#screen_capture_form").submit(function (event) {
             // stop the form from making a post request
             event.preventDefault();
+            // empty the analysis div in case content from a previous user action is there
+            $("#analysis").empty();
             // pause the video before we do anything so that the scene doesnt shift
             let video = document.getElementById('video');
             video.pause();
@@ -170,15 +180,79 @@
             }
         }
 
-        function send_blob(img_blob) {
+        $("#search_btn").click(function (event) {
+            // first we check to make sure the image blob in not null
+            if (img_blob === null) {
+                alert("you need to capture and image first before analyzing it");
+                return;
+            }
+            // update the div to show that results are loading
+
+            // create and send the HTTP request with the image data
             var req = new XMLHttpRequest();
             req.open("POST", "/reverse_search", true);
             req.onload = function (event) {
-                // Uploaded.
-                console.log("uploaded");
+                // check the response status and if its good pass the results to a function that will show them on the webpage
+                if (this.status != 200) {
+                    console.error("analysis failed");
+                } else {
+                    render_vision_results(JSON.parse(this.response));
+                }
             };
             req.send(img_blob);
+        })
+
+        function render_vision_results(vision_resp) {
+            console.log(vision_resp);
+            // first empty the div from any content that may be previously
+            $("#analysis").empty();
+
+            // google starter code ripoff for printing web annotations
+            const webDetection = vision_resp.webDetection;
+            if (webDetection.fullMatchingImages.length) {
+                console.log(`Full matches found: ${webDetection.fullMatchingImages.length}`);
+                $("#analysis").append('<ul id="full_matching"><h2>Full Matching Images Found on the Web</h2></ul>');
+                webDetection.fullMatchingImages.forEach(image => {
+                    $("#full_matching").append(`<li>  URL: ${image.url}</li>`);
+                    //console.log(`  Score: ${image.score}`);
+                });
+            }
+
+            if (webDetection.partialMatchingImages.length) {
+                console.log(`Partial matches found: ${webDetection.partialMatchingImages.length}`);
+                $("#analysis").append('<ul id="partial_matching"><h2>Partial Matching Images Found on the Web</h2></ul>');
+                webDetection.partialMatchingImages.forEach(image => {
+                    $("#partial_matching").append(`<li>  URL: ${image.url}</li>`);
+                    //console.log(`  Score: ${image.score}`);
+                });
+            }
+
+            if (webDetection.webEntities.length) {
+                console.log(`Web entities found: ${webDetection.webEntities.length}`);
+                $("#analysis").append('<ul id="web_entities"><h2>Related Items Found on the Web</h2></ul>');
+                webDetection.webEntities.forEach(webEntity => {
+                    $("#web_entities").append(`<li>  Description: ${webEntity.description}</li>`);
+                    //console.log(`  Score: ${webEntity.score}`);
+                });
+            }
+
+            if (webDetection.bestGuessLabels.length) {
+                console.log(`Best guess labels found: ${webDetection.bestGuessLabels.length}`);
+                $("#analysis").append('<ul id="best_guess"><h2>Image Content Guess</h2></ul>');
+                webDetection.bestGuessLabels.forEach(label => {
+                    $("#best_guess").append(`<li>  Label: ${label.label}</li>`);
+                });
+            }
+
+            const labels = result.labelAnnotations;
+            console.log(`Best guess labels found: ${labels.length}`);
+            $("#analysis").append('<ul id="labels"><h2>Image Labels</h2></ul>');
+            labels.forEach((label) => {
+                $("#labels").append(`<li>  Label: ${label.description}</li>`);
+            });
         }
+
+
 
     </script>
 </body>
