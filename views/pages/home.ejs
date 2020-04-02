@@ -62,7 +62,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        var vision_key = JSON.stringify();
+        var token = <%- JSON.stringify(token) %>; // TODO <- server generated key thing to prevent cross site scripting
         var img_blob = null;
 
         $("#video_form").submit(function (event) {
@@ -244,15 +244,13 @@
                 });
             }
 
-            const labels = result.labelAnnotations;
+            const labels = vision_resp.labelAnnotations;
             console.log(`Best guess labels found: ${labels.length}`);
             $("#analysis").append('<ul id="labels"><h2>Image Labels</h2></ul>');
             labels.forEach((label) => {
                 $("#labels").append(`<li>  Label: ${label.description}</li>`);
             });
         }
-
-
 
     </script>
 </body>

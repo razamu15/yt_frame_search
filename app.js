@@ -7,6 +7,12 @@ const request = require('request');
 const vision = require('@google-cloud/vision');
 const gcp_client = new vision.ImageAnnotatorClient();
 
+// Import the Firestore library and initialize the object
+const Firestore = require('@google-cloud/firestore');
+const db = new Firestore({
+  projectId: config.gcp_project_id,
+  keyFilename: config.gcp_key_file_path
+});
 
 const app = express();
 // define expres middleware
@@ -31,7 +37,18 @@ app.use((req, res, next) => {
 
 
 app.get('/', (req, res) => {
-  res.render('pages/home');
+  // generate the token and render the response to the user first
+  let unique_token = uuid.v4();
+  let gen_time = new Date();
+  res.render('pages/home', {token: unique_token});
+  // now store the token in firestore
+  let docRef = db.collection('api_tokens').doc(unique_token);
+  let insert_token = docRef.set({
+    date: gen_time,
+    timestamp: gen_time.getTime(),
+    max_age: config.api_token_ttl * 60000,
+    usage: 0
+  });
 })
 
 
