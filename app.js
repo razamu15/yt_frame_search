@@ -7,7 +7,7 @@ const config = {
   gcp_project_id: 'plasma-buckeye-268306',
   gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
   api_token_ttl: 30,
-  api_token_limit: 25
+  api_token_limit: 3
 }
 
 // Imports the Google Cloud client library and create the client
@@ -101,10 +101,37 @@ app.get('/get_video', async (req, res) => {
 })
 
 
+function validate_user_token(user_token) {
+  // this function uses a returned promise that is waited on by the caller because db call operation is asynchronous
+  return new Promise((resolve, reject) => {
+    // try to retrieve a document of the given id but if it fails respond with status 500
+    let tokens = db.collection('api_tokens').where('token', '==', user_token).where('valid', "==", true);
+    tokens.get()
+    .then((snapshot) => {
+      // check if the query returned a document and if it didnt then it was an invalid token
+      if (snapshot.empty) {
+        reject({ status: 403, message: "invalid request" });
+      } else {
+        // if the request is valid then we will keep the document reference and update its values to reflect this request
+        snapshot.forEach(document => {
+          // i can return in the foreach because the field i fetched on is a uuid
+          resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice
+        });
+      }
+    })
+    .catch((error) => {
+      reject({status: 500, message:error.message});
+    })
+  })
+}
+
 app.post('/analyze_image', async (req, res) => {
   read_image_from_req = () => {
+    // this function uses a returned promise that the caller waits on because we need to deal with the data that should
+    // be accessed via the callback once the event fires
     return new Promise((resolve, reject) => {
       var image_chunks = [];
+      // the callback is automatically called any number of times untill all the data has been read so i dont need a loop
       req.on('readable', function () {
         let image_src = req.read();
         if (image_src === null) {
@@ -115,24 +142,13 @@ app.post('/analyze_image', async (req, res) => {
       })
     })
   }
-  // validate the token that was sent before doing anything else
-  let user_token = req.query.token;
-  let doc = null;
-  // try to retrieve a document of the given id but if it fails respond with status 500
-  try {
-    snapshot = await db.collection('api_tokens').where('token', '==', user_token).where('valid', "==", true).get();
-  } catch (error) {
-    return res.status(500).json({ type: 'error', message: error.message });
-  }
 
-  // check if the query returned a document and if it didnt then it was an invalid token
-  if (snapshot.empty) {
-    return res.status(403).json({ type: 'error', message: "invalid request" });
-  } else {
-    // if the request is valid then we will keep the document reference and update its values to reflect this request
-    snapshot.forEach(document => {
-      doc = document;
-    });
+  let doc = null;
+  // call the function to validate the token that was sent before doing anything else
+  try {
+    doc = await validate_user_token(req.query.token);
+  } catch (error) {
+    return res.status(error.status).json({ type: 'error', message: error.message });
   }
 
   // wait on the function that will read the img from the request and resolve with an array of buffers
@@ -154,7 +170,7 @@ app.post('/analyze_image', async (req, res) => {
     ]
   };
 
-  // call the cloud vision api
+  // call the cloud vision api  TODO -> surround with try catch
   const [result] = await gcp_client.annotateImage(request);
   // return the vision api call straight to the browser
   res.send(result);
@@ -164,7 +180,7 @@ app.post('/analyze_image', async (req, res) => {
     'usage': Firestore.FieldValue.increment(1),
   };
   // after evaluating this request if the time has expired or we hit the rate limit then we set validity of token to false
-  if (doc.data().expiry <= Date.now() || doc.data().usage == config.api_token_limit - 1){
+  if (doc.data().expiry <= Date.now() || doc.data().usage == config.api_token_limit - 1) {
     update_obj['valid'] = false
   }
   doc.ref.update(update_obj);
@@ -182,6 +198,7 @@ app.listen(PORT, () => console.log(`listening on ${PORT}`));
  * caching 2:= DONE implement the persistent key storage from secutity 1 ;; this will also need a cache expiration so the same key cant be used many times
  *
  * optimization 1:=  DONE - replaced with URLsearchparams  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
- * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality */
+ * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality
+ * optimization 3:=  extract nested function definitions to global scope*/
 
  // export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json"
