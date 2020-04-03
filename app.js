@@ -6,7 +6,7 @@ const uuid = require('uuid')
 const config = {
   gcp_project_id: 'plasma-buckeye-268306',
   gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
-  api_token_ttl: 30,
+  api_token_ttl_secs: 30 * 60, // 30 mins * 60 secs/min
   api_token_limit: 3
 }
 
@@ -46,13 +46,12 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   // generate the token and render the response to the user first
   let unique_token = uuid.v4();
-  let gen_time = new Date();
   res.render('pages/home', { token: unique_token });
   // now store the token in firestore
   let docRef = db.collection('api_tokens').add({
     token: unique_token,
-    date: gen_time,
-    expiry: gen_time.getTime() + config.api_token_ttl * 60000,
+    creation_time: Firestore.Timestamp.now(),
+    expiry_seconds: config.api_token_ttl_secs,
     usage: 0,
     valid: true
   });
@@ -72,8 +71,8 @@ function retrieve_video_link(video_id) {
           result = {
             video_id: video_id,
             stream_link: vid_streams.streamingData.formats[1].url,
-            // -10 to leave some room for the time between origin server expires field creation vs when mine added it to Date.now
-            expiry: Date.now() + vid_streams.streamingData.expiresInSeconds - 10
+            // -10 to leave some room for the time between origin server expires field creation vs when mine
+            expires_in_seconds: vid_streams.streamingData.expiresInSeconds - 10
           }
           resolve(result);
         }
@@ -92,8 +91,8 @@ function get_video_link(video_id) {
         } else {
           // if the request is valid then we will keep the document reference and update its values to reflect this request
           snapshot.forEach(document => {
-            // validate this document
-            if (document.data().expiry < Date.now()) {
+            // validate this document TODO possible take out of loop / design choice?
+            if (document.data().expiry_seconds * 1000 + document.data().creation_time.toMillis() <= Date.now()) { // TODO FIX EXPIRY CHECK
               resolve({ vid_info: retrieve_video_link(video_id), doc_ref: document.ref, cached: true, cache_valid: false });
             } else {
               resolve({ vid_info: document.data(), doc_ref: document.ref, cached: true, cache_valid: true });
@@ -115,7 +114,7 @@ app.get('/get_video', async (req, res) => {
   req.pipe(x);
   x.pipe(res);
 
-  // after we make whatever request we need, we check our object to see what needs to be updated in out database
+  // after we make whatever request we need, update the database caches
   if (!stream_info.cached || !stream_info.cache_valid) {
     // if this was the case of an expired cache we need to set that to invalid
     if (stream_info.doc_ref != null) {
@@ -127,13 +126,19 @@ app.get('/get_video', async (req, res) => {
     db.collection('video_links').add({
       video_id: req.query.video_id,
       stream_link: def_stream.stream_link,
-      gen_time: new Date(),
-      expiry: def_stream.expiry,
-      assciated_tokens: [
-        req.query.token       // properly union the array thingys TODO
+      creation_time: Firestore.Timestamp.now(),
+      expiry_seconds: def_stream.expires_in_seconds,
+      associated_tokens: [
+        req.query.token
       ],
       valid: true
     })
+  } else {
+    // there is a valid existing cache for this video's streaming link
+    // all i need to do is add this token to the list of tokens on the preexisting document
+    let token_union = stream_info.doc_ref.update({
+      associated_tokens: Firestore.FieldValue.arrayUnion(req.query.token)
+    });
   }
 })
 
@@ -151,8 +156,30 @@ function validate_user_token(user_token) {
         } else {
           // if the request is valid then we will keep the document reference and update its values to reflect this request
           snapshot.forEach(document => {
-            // i can return in the foreach because the field i fetched on is a uuid
-            resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice
+            // once i get document then i check if it is valid or not
+            let update_obj = {};
+            let doc_data = document.data();
+            let reject = false;
+
+            // after evaluating this request if the time has expired or we hit the rate limit then we set validity of token to false
+            if (doc_data.expiry_seconds * 1000 + doc_data.creation_time.toMillis() <= Date.now() || doc_data.usage === config.api_token_limit) {
+              update_obj['valid'] = false;
+              reject = true;
+            } else {
+              update_obj['usage'] = Firestore.FieldValue.increment(1)
+              // if the current value is one less than limit then we can label it invalid ahead of time to save a db read and write
+              if (doc_data.usage - 1 === config.api_token_limit) {
+                update_obj['valid'] = false
+              }
+            }
+            document.ref.update(update_obj);
+
+            if (reject) {
+              reject({ status: 403, message: "expired credentials" });
+            } else {
+              // i can return in the foreach because the field i fetched on is a uuid
+              resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice 
+            }
           });
         }
       })
@@ -185,6 +212,7 @@ app.post('/analyze_image', async (req, res) => {
   try {
     doc = await validate_user_token(req.query.token);
   } catch (error) {
+    console.error(error);
     return res.status(error.status).json({ type: 'error', message: error.message });
   }
 
@@ -207,24 +235,15 @@ app.post('/analyze_image', async (req, res) => {
     ]
   };
 
-  // call the cloud vision api  TODO -> surround with try catch
+  // call the cloud vision api and return the vision api call straight to the browser
   try {
     const [result] = await gcp_client.annotateImage(request);
-    // return the vision api call straight to the browser
     res.send(result);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ type: 'error', message: error.message });
   }
 
-  // after we send the response back, we will update our database to reflect this request
-  update_obj = {
-    'usage': Firestore.FieldValue.increment(1),
-  };
-  // after evaluating this request if the time has expired or we hit the rate limit then we set validity of token to false
-  if (doc.data().expiry <= Date.now() || doc.data().usage == config.api_token_limit - 1) {
-    update_obj['valid'] = false
-  }
-  doc.ref.update(update_obj);
   // TODO now update the screenshot_analyses collection
 
 })
