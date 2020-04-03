@@ -109,24 +109,6 @@
             $("#screen_capture_ctrls").show();
         }
 
-        function draw_frame() {
-            // get the video and draw its current frame onto the canvas
-            let canvas = document.getElementById('canvas');
-            let video = document.getElementById('video');
-            //let video = document.getElementById('video');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-            // convert the image from the canvas to a blob
-            canvas.toBlob((blob) => {
-                img_blob = blob;
-                link = (window.URL ? URL : webkitURL).createObjectURL(blob);
-                $("#down_link").attr('href', link);
-            });
-            // show the download screenshot and reverse search buttons once we have the image drawn
-            $("#screen_shot_ctrls").show();
-        }
-
         $("#screen_capture_form").submit(function (event) {
             // stop the form from making a post request
             event.preventDefault();
@@ -180,15 +162,22 @@
             img_ts = ts;
         })
 
-        function toggle_ts(radio_ele) {
-            if (radio_ele.value === "current" && radio_ele.checked) {
-                // disable the time stamp text input field
-                $('#time_stamp').attr('disabled', true);
-            } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
-                // enable the time stamp text input field
-                $('#time_stamp').attr('disabled', false);
-                $('#time_stamp').attr('required', true);
-            }
+        function draw_frame() {
+            // get the video and draw its current frame onto the canvas
+            let canvas = document.getElementById('canvas');
+            let video = document.getElementById('video');
+            //let video = document.getElementById('video');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            // convert the image from the canvas to a blob
+            canvas.toBlob((blob) => {
+                img_blob = blob;
+                link = (window.URL ? URL : webkitURL).createObjectURL(blob);
+                $("#down_link").attr('href', link);
+            });
+            // show the download screenshot and reverse search buttons once we have the image drawn
+            $("#screen_shot_ctrls").show();
         }
 
         $("#search_btn").click(function (event) {
@@ -267,6 +256,17 @@
             labels.forEach((label) => {
                 $("#labels").append(`<li>  Label: ${label.description}</li>`);
             });
+        }
+
+        function toggle_ts(radio_ele) {
+            if (radio_ele.value === "current" && radio_ele.checked) {
+                // disable the time stamp text input field
+                $('#time_stamp').attr('disabled', true);
+            } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
+                // enable the time stamp text input field
+                $('#time_stamp').attr('disabled', false);
+                $('#time_stamp').attr('required', true);
+            }
         }
 
     </script>
