@@ -63,7 +63,7 @@ function retrieve_video_link(video_id) {
       { url: "https://www.youtube.com/get_video_info?video_id=" + video_id },
       (error, response, body) => {
         if (error || response.statusCode !== 200) {
-          reject({ status: 500, message: "info api call failed" });
+          reject({ status: response.statusCode, message: "info api call failed" });
         } else {
           // the api call was successfull so now we can parse the response
           let vid_info = new URLSearchParams(body);
@@ -91,8 +91,8 @@ function get_video_link(video_id) {
         } else {
           // if the request is valid then we will keep the document reference and update its values to reflect this request
           snapshot.forEach(document => {
-            // validate this document TODO possible take out of loop / design choice?
-            if (document.data().expiry_seconds * 1000 + document.data().creation_time.toMillis() <= Date.now()) { // TODO FIX EXPIRY CHECK
+            // validate this document          --------TODOP ossible take out of loop / design choice?
+            if (document.data().expiry_seconds * 1000 + document.data().creation_time.toMillis() <= Date.now()) {
               resolve({ vid_info: retrieve_video_link(video_id), doc_ref: document.ref, cached: true, cache_valid: false });
             } else {
               resolve({ vid_info: document.data(), doc_ref: document.ref, cached: true, cache_valid: true });
@@ -100,13 +100,27 @@ function get_video_link(video_id) {
           });
         }
       })
+      .catch((error) => {
+        reject({ status: 500, message: error.message });
+      })
   })
 }
 
 app.get('/get_video', async (req, res) => {
-  // TODO deal wit hrejection values of the rpmimses
-  let stream_info = await get_video_link(req.query.video_id);
-  let def_stream = await stream_info.vid_info;
+  // assert that we have the required query params for this request
+  if (!req.query.hasOwnProperty("token") || !req.query.hasOwnProperty("video_id")) {
+    return res.status(400).json({ type: 'error', message: "missing required params" });
+  }
+  // wrap both awaits in the same try catch
+  let stream_info;
+  let def_stream;
+  try {
+    stream_info = await get_video_link(req.query.video_id);
+    def_stream = await stream_info.vid_info;
+  } catch (error) {
+    console.error(error);
+    return res.status(error.status).json({ type: 'error', message: error.message });
+  }
 
   // we  make the call for the video using the double pipe so that its basically
   // the same as calling the original but w/o the CORS
@@ -190,6 +204,11 @@ function validate_user_token(user_token) {
 }
 
 app.post('/analyze_image', async (req, res) => {
+  // assert that we have the required query params for this request
+  if (!req.query.hasOwnProperty("token")) {
+    return res.status(400).json({ type: 'error', message: "missing required params" });
+  }
+  
   read_image_from_req = () => {
     // this function uses a returned promise that the caller waits on because we need to deal with the data that should
     // be accessed via the callback once the event fires
