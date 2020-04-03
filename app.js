@@ -58,46 +58,83 @@ app.get('/', (req, res) => {
   });
 })
 
+function retrieve_video_link(video_id) {
+  return new Promise((resolve, reject) => {
+    request(
+      { url: "https://www.youtube.com/get_video_info?video_id=" + video_id },
+      (error, response, body) => {
+        if (error || response.statusCode !== 200) {
+          reject({ status: 500, message: "info api call failed" });
+        } else {
+          // the api call was successfull so now we can parse the response
+          let vid_info = new URLSearchParams(body);
+          let vid_streams = JSON.parse(vid_info.get("player_response"));
+          result = {
+            video_id: video_id,
+            stream_link: vid_streams.streamingData.formats[1].url,
+            // -10 to leave some room for the time between origin server expires field creation vs when mine added it to Date.now
+            expiry: Date.now() + vid_streams.streamingData.expiresInSeconds - 10
+          }
+          resolve(result);
+        }
+      })
+  })
+}
+
+function get_video_link(video_id) {
+  return new Promise((resolve, reject) => {
+    let video_coll = db.collection('video_links').where('video_id', '==', video_id).where('valid', "==", true);
+    video_coll.get()
+      .then((snapshot) => {
+        // check if the query returned a document and if it didnt then it was we need to make api call
+        if (snapshot.empty) {
+          resolve({ vid_info: retrieve_video_link(video_id), doc_ref: null, cached: false });
+        } else {
+          // if the request is valid then we will keep the document reference and update its values to reflect this request
+          snapshot.forEach(document => {
+            // validate this document
+            if (document.data().expiry < Date.now()) {
+              resolve({ vid_info: retrieve_video_link(video_id), doc_ref: document.ref, cached: true, cache_valid: false });
+            } else {
+              resolve({ vid_info: document.data(), doc_ref: document.ref, cached: true, cache_valid: true });
+            }
+          });
+        }
+      })
+  })
+}
 
 app.get('/get_video', async (req, res) => {
-  // first we make the get_info api request to get the various streaming links
-  // define an anonymus function that will wrap the request call in a promise
-  get_video_info = (video_id) => {
-    return new Promise((resolve, reject) => {
-      request(
-        { url: "https://www.youtube.com/get_video_info?video_id=" + video_id },
-        (error, response, body) => {
-          if (error || response.statusCode !== 200) {
-            reject("info api call failed")
-          } else {
-            resolve(body);
-          }
-        })
-    })
-  }
-
-  // TODO: look at firestore before making api call
-
-  // call the function with the given video id and send a status 500 if the promise got rejected
-  var vid_info;
-  try {
-    vid_info = await get_video_info(req.query.video_id);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ type: 'error', message: error.message });
-  }
-
-  vid_info = new URLSearchParams(vid_info);
-  let vid_streams = JSON.parse(vid_info.get("player_response"));
-  let def_stream = vid_streams.streamingData.formats[1].url;
+  // TODO deal wit hrejection values of the rpmimses
+  let stream_info = await get_video_link(req.query.video_id);
+  let def_stream = await stream_info.vid_info;
 
   // we  make the call for the video using the double pipe so that its basically
   // the same as calling the original but w/o the CORS
-  const x = request(def_stream);
+  const x = request(def_stream.stream_link);
   req.pipe(x);
   x.pipe(res);
 
-  // TODO add the streaming data to video_links collection
+  // after we make whatever request we need, we check our object to see what needs to be updated in out database
+  if (!stream_info.cached || !stream_info.cache_valid) {
+    // if this was the case of an expired cache we need to set that to invalid
+    if (stream_info.doc_ref != null) {
+      stream_info.doc_ref.update({
+        valid: false,
+      })
+    }
+    // the cache was invalidated so we need to add this new data to our database
+    db.collection('video_links').add({
+      video_id: req.query.video_id,
+      stream_link: def_stream.stream_link,
+      gen_time: new Date(),
+      expiry: def_stream.expiry,
+      assciated_tokens: [
+        req.query.token       // properly union the array thingys TODO
+      ],
+      valid: true
+    })
+  }
 })
 
 
@@ -107,21 +144,21 @@ function validate_user_token(user_token) {
     // try to retrieve a document of the given id but if it fails respond with status 500
     let tokens = db.collection('api_tokens').where('token', '==', user_token).where('valid', "==", true);
     tokens.get()
-    .then((snapshot) => {
-      // check if the query returned a document and if it didnt then it was an invalid token
-      if (snapshot.empty) {
-        reject({ status: 403, message: "invalid request" });
-      } else {
-        // if the request is valid then we will keep the document reference and update its values to reflect this request
-        snapshot.forEach(document => {
-          // i can return in the foreach because the field i fetched on is a uuid
-          resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice
-        });
-      }
-    })
-    .catch((error) => {
-      reject({status: 500, message:error.message});
-    })
+      .then((snapshot) => {
+        // check if the query returned a document and if it didnt then it was an invalid token
+        if (snapshot.empty) {
+          reject({ status: 403, message: "invalid request" });
+        } else {
+          // if the request is valid then we will keep the document reference and update its values to reflect this request
+          snapshot.forEach(document => {
+            // i can return in the foreach because the field i fetched on is a uuid
+            resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice
+          });
+        }
+      })
+      .catch((error) => {
+        reject({ status: 500, message: error.message });
+      })
   })
 }
 
@@ -171,9 +208,13 @@ app.post('/analyze_image', async (req, res) => {
   };
 
   // call the cloud vision api  TODO -> surround with try catch
-  const [result] = await gcp_client.annotateImage(request);
-  // return the vision api call straight to the browser
-  res.send(result);
+  try {
+    const [result] = await gcp_client.annotateImage(request);
+    // return the vision api call straight to the browser
+    res.send(result);
+  } catch (error) {
+    return res.status(500).json({ type: 'error', message: error.message });
+  }
 
   // after we send the response back, we will update our database to reflect this request
   update_obj = {
