@@ -1,7 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
+const uuid = require('uuid')
 
+const config = {
+  gcp_project_id: 'plasma-buckeye-268306',
+  gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
+  api_token_ttl: 30,
+  api_token_limit: 25
+}
 
 // Imports the Google Cloud client library and create the client
 const vision = require('@google-cloud/vision');
@@ -40,19 +47,19 @@ app.get('/', (req, res) => {
   // generate the token and render the response to the user first
   let unique_token = uuid.v4();
   let gen_time = new Date();
-  res.render('pages/home', {token: unique_token});
+  res.render('pages/home', { token: unique_token });
   // now store the token in firestore
-  let docRef = db.collection('api_tokens').doc(unique_token);
-  let insert_token = docRef.set({
+  let docRef = db.collection('api_tokens').add({
+    token: unique_token,
     date: gen_time,
-    timestamp: gen_time.getTime(),
-    max_age: config.api_token_ttl * 60000,
-    usage: 0
+    expiry: gen_time.getTime() + config.api_token_ttl * 60000,
+    usage: 0,
+    valid: true
   });
 })
 
 
-app.get('/get_video/:video_id', async (req, res) => {
+app.get('/get_video', async (req, res) => {
   // first we make the get_info api request to get the various streaming links
   // define an anonymus function that will wrap the request call in a promise
   get_video_info = (video_id) => {
@@ -69,15 +76,17 @@ app.get('/get_video/:video_id', async (req, res) => {
     })
   }
 
+  // TODO: look at firestore before making api call
+
   // call the function with the given video id and send a status 500 if the promise got rejected
   var vid_info;
   try {
-    vid_info = await get_video_info(req.params.video_id);
+    vid_info = await get_video_info(req.query.video_id);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ type: 'error', message: error.message });
   }
-  
+
   vid_info = new URLSearchParams(vid_info);
   let vid_streams = JSON.parse(vid_info.get("player_response"));
   let def_stream = vid_streams.streamingData.formats[1].url;
@@ -87,10 +96,12 @@ app.get('/get_video/:video_id', async (req, res) => {
   const x = request(def_stream);
   req.pipe(x);
   x.pipe(res);
+
+  // TODO add the streaming data to video_links collection
 })
 
 
-app.post('/reverse_search', async (req, res) => {
+app.post('/analyze_image', async (req, res) => {
   read_image_from_req = () => {
     return new Promise((resolve, reject) => {
       var image_chunks = [];
@@ -103,6 +114,25 @@ app.post('/reverse_search', async (req, res) => {
         }
       })
     })
+  }
+  // validate the token that was sent before doing anything else
+  let user_token = req.query.token;
+  let doc = null;
+  // try to retrieve a document of the given id but if it fails respond with status 500
+  try {
+    snapshot = await db.collection('api_tokens').where('token', '==', user_token).where('valid', "==", true).get();
+  } catch (error) {
+    return res.status(500).json({ type: 'error', message: error.message });
+  }
+
+  // check if the query returned a document and if it didnt then it was an invalid token
+  if (snapshot.empty) {
+    return res.status(403).json({ type: 'error', message: "invalid request" });
+  } else {
+    // if the request is valid then we will keep the document reference and update its values to reflect this request
+    snapshot.forEach(document => {
+      doc = document;
+    });
   }
 
   // wait on the function that will read the img from the request and resolve with an array of buffers
@@ -128,16 +158,28 @@ app.post('/reverse_search', async (req, res) => {
   const [result] = await gcp_client.annotateImage(request);
   // return the vision api call straight to the browser
   res.send(result);
+
+  // after we send the response back, we will update our database to reflect this request
+  update_obj = {
+    'usage': Firestore.FieldValue.increment(1),
+  };
+  // after evaluating this request if the time has expired or we hit the rate limit then we set validity of token to false
+  if (doc.data().expiry <= Date.now() || doc.data().usage == config.api_token_limit - 1){
+    update_obj['valid'] = false
+  }
+  doc.ref.update(update_obj);
+  // TODO now update the screenshot_analyses collection
+
 })
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
 /**
- * security 1:=  generate a unique key for each get on '/' and set that as the query param for image search api call. validate the incoming key param on image search route against the generated set of keys
+ * security 1:= DONE generate a unique key for each get on '/' and set that as the query param for image search api call. validate the incoming key param on image search route against the generated set of keys
  *
  * caching 1:=  video id: streaming link -> to prevent making the get infor api call repeatedly. will work for the same user skipping ahead or multiple users uaing same video
- * caching 2:=  implement the persistent key storage from secutity 1 ;; this will also need a cache expiration so the same key cant be used many times
+ * caching 2:= DONE implement the persistent key storage from secutity 1 ;; this will also need a cache expiration so the same key cant be used many times
  *
  * optimization 1:=  DONE - replaced with URLsearchparams  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
  * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality */

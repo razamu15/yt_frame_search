@@ -62,8 +62,10 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        var token = <%- JSON.stringify(token) %>; // TODO <- server generated key thing to prevent cross site scripting
+        //var token = ; // TODO <- server generated key thing to prevent cross site scripting
+        var video_id = null;
         var img_blob = null;
+        var img_ts = null;
 
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
@@ -87,12 +89,17 @@
         function add_video(youtubeID) {
             // first empty the container in case if there is already a video there
             $("#video_cont").empty();
-            // add a video containershow the capture button
+            // add a video container
+            let vid_route_params = new URLSearchParams();
+            vid_route_params.set("video_id", youtubeID);
+            vid_route_params.set("token", "<%- token %>");
             $("#video_cont").append(
-                `<video controls width="250" height="200" src="/get_video/${youtubeID}" id="video"> 
+                `<video controls width="250" height="200" src="/get_video?${vid_route_params.toString()}" id="video"> 
                     This browser does not support the HTML5 video element.
                 </video>`
             );
+            // set global variable
+            video_id = youtubeID;
 
             // TODO: set an event handler on video for error playback thingy so that 
             // when a failed get info call(either by server itself or livestream or by incorrect vid) from the backend comes,
@@ -139,10 +146,11 @@
                 return obj.name === "frame_source";
             }).value;
 
+            let ts = null;
             // if the capture is by timestamp we need to seek the video to that time
             if (frame_src === "timestamp") {
                 // get the timestamp value from the from
-                let ts = form_data.find(function (obj) {
+                ts = form_data.find(function (obj) {
                     return obj.name === "time_stamp";
                 }).value;
                 // calculate the seconds from the timestamp
@@ -166,7 +174,10 @@
             } else {
                 // frame_src === "current"
                 draw_frame();
+                ts = video.currentTime;
             }
+            // set the global timestamp variable
+            img_ts = ts;
         })
 
         function toggle_ts(radio_ele) {
@@ -182,15 +193,21 @@
 
         $("#search_btn").click(function (event) {
             // first we check to make sure the image blob in not null
-            if (img_blob === null) {
+            if (img_blob === null || img_ts ===null) {
                 alert("you need to capture and image first before analyzing it");
                 return;
             }
-            // update the div to show that results are loading
+            // update the div to show that results are loading TODO
+
+            // build the query params for the post route
+            let analysis_params = new URLSearchParams();
+            analysis_params.set("screen_ts", img_ts);
+            analysis_params.set("video_id", video_id);
+            analysis_params.set("token", "<%- token %>");
 
             // create and send the HTTP request with the image data
             var req = new XMLHttpRequest();
-            req.open("POST", "/reverse_search", true);
+            req.open("POST", "/analyze_image?" + analysis_params.toString() , true);
             req.onload = function (event) {
                 // check the response status and if its good pass the results to a function that will show them on the webpage
                 if (this.status != 200) {
