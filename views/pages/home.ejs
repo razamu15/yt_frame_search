@@ -145,6 +145,7 @@
                     alert("Timestamp not valid");
                     return;
                 }
+                ts = total_seconds;
                 video.currentTime = total_seconds;
                 // when we capture by timestamp, we need to set an event lsitener that will make the call to draw frame 
                 // so we draw the correct frame when the data after the seek has been loaded in the video

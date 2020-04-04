@@ -173,26 +173,26 @@ function validate_user_token(user_token) {
             // once i get document then i check if it is valid or not
             let update_obj = {};
             let doc_data = document.data();
-            let reject = false;
+            let expired = false;
 
             // after evaluating this request if the time has expired or we hit the rate limit then we set validity of token to false
             if (doc_data.expiry_seconds * 1000 + doc_data.creation_time.toMillis() <= Date.now() || doc_data.usage === config.api_token_limit) {
               update_obj['valid'] = false;
-              reject = true;
+              expired = true;
             } else {
               update_obj['usage'] = Firestore.FieldValue.increment(1)
               // if the current value is one less than limit then we can label it invalid ahead of time to save a db read and write
-              if (doc_data.usage - 1 === config.api_token_limit) {
-                update_obj['valid'] = false
+              if (doc_data.usage + 1 === config.api_token_limit) {
+                update_obj['valid'] = false;
               }
             }
             document.ref.update(update_obj);
 
-            if (reject) {
+            if (expired) {
               reject({ status: 403, message: "expired credentials" });
             } else {
               // i can return in the foreach because the field i fetched on is a uuid
-              resolve(document);  // TODO possibly finish the loop before returning although this could be a design choice 
+              resolve(document);  // TODOP possibly finish the loop before returning although this could be a design choice 
             }
           });
         }
@@ -208,7 +208,7 @@ app.post('/analyze_image', async (req, res) => {
   if (!req.query.hasOwnProperty("token")) {
     return res.status(400).json({ type: 'error', message: "missing required params" });
   }
-  
+
   read_image_from_req = () => {
     // this function uses a returned promise that the caller waits on because we need to deal with the data that should
     // be accessed via the callback once the event fires
@@ -264,6 +264,33 @@ app.post('/analyze_image', async (req, res) => {
   }
 
   // TODO now update the screenshot_analyses collection
+  // first check if the additional params were given
+  if (req.query.hasOwnProperty("video_id") && req.query.hasOwnProperty("screen_ts")) {
+    // query the document for the current 
+    db.collection("screen_grabs");
+    let screen_grabs = db.collection('screen_grabs');
+    screen_grabs.where('token', '==', req.query.token).where('video_id', "==", req.query.video_id).get()
+      .then((snapshot) => {
+        // there is no such document then create it
+        if (snapshot.empty) {
+          screen_grabs.add({
+            token: req.query.token,
+            video_id: req.query.video_id,
+            time_stamps: [
+              req.query.screen_ts
+            ]
+          });
+        } else {
+          // ow just update the array with the new timestamp
+          snapshot.forEach(document => {
+            // validate this document
+            document.ref.update({
+              time_stamps: Firestore.FieldValue.arrayUnion(req.query.screen_ts)
+            });
+          });
+        }
+      })
+  }
 
 })
 
