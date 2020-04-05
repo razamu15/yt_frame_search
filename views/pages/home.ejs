@@ -42,9 +42,9 @@
         </form>
     </div>
 
-
-
-    <div id="canvas_container">
+    <div id="canvas_cont">
+        <!-- // TODO = FIX the dimesions of the loader frame -->
+        <iframe id="canvas_loader_frame" src="/html/loader.html" width="200" height="200" hidden></iframe>
         <canvas id="canvas" style="overflow:auto"></canvas>
     </div>
 
@@ -58,7 +58,12 @@
         </a>
     </div>
 
-    <div id="analysis"></div>
+    <div id="analysis_cont">
+        <div id="analysis"></div>
+        <!-- // TODO = FIX the dimesions of the loader frame -->
+        <iframe id="analysis_loader_frame" src="/html/loader.html" width="200" height="200" hidden></iframe>
+    </div>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
@@ -70,10 +75,10 @@
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
             event.preventDefault();
-            
+
             // empty the divs and canvas in case content from a previous user action is there
             let canvas = document.getElementById('canvas');
-            canvas.getContext('2d').clearRect(0,0,canvas.width, canvas.height);
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
             $("#analysis").empty();
 
             // get the youtube_url from the form
@@ -98,13 +103,16 @@
                     This browser does not support the HTML5 video element.
                 </video>`
             );
+
+            // set an error events listener that will send an alert to the user if something goes wrong
+            $("#video").on("error waiting stalled", function (event) {
+                console.error(event);
+                alert("something went wrong in video playback please try again");
+                $(this).get(0).pause();
+            })
+
             // set global variable
             video_id = youtubeID;
-
-            // TODO: set an event handler on video for error playback thingy so that 
-            // when a failed get info call(either by server itself or livestream or by incorrect vid) from the backend comes,
-            // we can say that something went wrong to the user
-
             // show the capture screenshot controls
             $("#screen_capture_ctrls").show();
         }
@@ -112,14 +120,15 @@
         $("#screen_capture_form").submit(function (event) {
             // stop the form from making a post request
             event.preventDefault();
-            // empty the analysis div in case content from a previous user action is there
-            $("#analysis").empty();
+
             // pause the video before we do anything so that the scene doesnt shift
             let video = document.getElementById('video');
             video.pause();
 
-            // TODO: set canvas to loading
-
+            // empty the analysis div in case content from a previous user action is there
+            $("#analysis").empty();
+            // set cavas to leading
+            $("#canvas_loader_frame").show();
 
             // get the form input and see which option user picked
             let form_data = $(this).serializeArray();
@@ -142,6 +151,7 @@
                 // make sure the seek time is the valid range
                 if (total_seconds < 0 || total_seconds > video.duration) {
                     // alert the user saying timestamp is not valid
+                    $("#canvas_loader_frame").hide();
                     alert("Timestamp not valid");
                     return;
                 }
@@ -164,6 +174,8 @@
         })
 
         function draw_frame() {
+            // before drawing hide the loading frame
+            $("#canvas_loader_frame").hide();
             // get the video and draw its current frame onto the canvas
             let canvas = document.getElementById('canvas');
             let video = document.getElementById('video');
@@ -183,11 +195,13 @@
 
         $("#search_btn").click(function (event) {
             // first we check to make sure the image blob in not null
-            if (img_blob === null || img_ts ===null) {
+            if (img_blob === null || img_ts === null) {
                 alert("you need to capture and image first before analyzing it");
                 return;
             }
             // update the div to show that results are loading TODO
+            $("#analysis").empty();
+            $("#analysis_loader_frame").show();
 
             // build the query params for the post route
             let analysis_params = new URLSearchParams();
@@ -197,10 +211,13 @@
 
             // create and send the HTTP request with the image data
             var req = new XMLHttpRequest();
-            req.open("POST", "/analyze_image?" + analysis_params.toString() , true);
+            req.open("POST", "/analyze_image?" + analysis_params.toString(), true);
             req.onload = function (event) {
+                // hide the loader
+                $("#analysis_loader_frame").hide();
                 // check the response status and if its good pass the results to a function that will show them on the webpage
                 if (this.status != 200) {
+                    alert("analysis failed please try again");
                     console.error("analysis failed");
                 } else {
                     render_vision_results(JSON.parse(this.response));

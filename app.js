@@ -42,6 +42,19 @@ app.use((req, res, next) => {
 // ---------------------------------------------------------------------------
 // ###########################################################################
 
+app.get('/mat', (req, res) => {
+  // generate the token and render the response to the user first
+  let unique_token = uuid.v4();
+  res.render('pages/mat_home', { token: unique_token });
+  // now store the token in firestore
+  let docRef = db.collection('api_tokens').add({
+    token: unique_token,
+    creation_time: Firestore.Timestamp.now(),
+    expiry_seconds: config.api_token_ttl_secs,
+    usage: 0,
+    valid: true
+  });
+})
 
 app.get('/', (req, res) => {
   // generate the token and render the response to the user first
@@ -263,7 +276,6 @@ app.post('/analyze_image', async (req, res) => {
     return res.status(500).json({ type: 'error', message: error.message });
   }
 
-  // TODO now update the screenshot_analyses collection
   // first check if the additional params were given
   if (req.query.hasOwnProperty("video_id") && req.query.hasOwnProperty("screen_ts")) {
     // query the document for the current 
@@ -298,13 +310,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
 /**
- * security 1:= DONE generate a unique key for each get on '/' and set that as the query param for image search api call. validate the incoming key param on image search route against the generated set of keys
- *
- * caching 1:=  video id: streaming link -> to prevent making the get infor api call repeatedly. will work for the same user skipping ahead or multiple users uaing same video
- * caching 2:= DONE implement the persistent key storage from secutity 1 ;; this will also need a cache expiration so the same key cant be used many times
- *
- * optimization 1:=  DONE - replaced with URLsearchparams  lines 65:76 copied from online to parse bodies, but should not be needed now that we have body parser enabled in express
- * optimization 2:=  line 79 remove the harcoded values/json paths and make it acutally based on response values and stream quality
+ * optimization 2:=  line 73 remove the harcoded values/json paths and make it acutally based on response values and stream quality
  * optimization 3:=  extract nested function definitions to global scope*/
 
  // export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json"
