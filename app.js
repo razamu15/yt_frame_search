@@ -80,14 +80,20 @@ function retrieve_video_link(video_id) {
         } else {
           // the api call was successfull so now we can parse the response
           let vid_info = new URLSearchParams(body);
-          let vid_streams = JSON.parse(vid_info.get("player_response"));
-          result = {
-            video_id: video_id,
-            stream_link: vid_streams.streamingData.formats[1].url,
-            // -10 to leave some room for the time between origin server expires field creation vs when mine
-            expires_in_seconds: vid_streams.streamingData.expiresInSeconds - 10
+
+          // we also have to explictly check status inside the response here because invalid params still send 200
+          if (vid_info.get("status") === "fail") {
+            reject({ status: 422, message: "invalid youtube video id" });
+          } else {
+            let vid_streams = JSON.parse(vid_info.get("player_response"));
+            result = {
+              video_id: video_id,
+              stream_link: vid_streams.streamingData.formats[1].url,
+              // -10 to leave some room for the time between origin server expires field creation vs when mine
+              expires_in_seconds: vid_streams.streamingData.expiresInSeconds - 10
+            }
+            resolve(result);
           }
-          resolve(result);
         }
       })
   })
@@ -263,6 +269,18 @@ app.post('/analyze_image', async (req, res) => {
       },
       {
         type: "LABEL_DETECTION"
+      },
+      {
+        type: "LANDMARK_DETECTION"
+      },
+      {
+        type: "FACE_DETECTION"
+      },
+      {
+        type: "TEXT_DETECTION"
+      },
+      {
+        type: "LOGO_DETECTION"
       }
     ]
   };
