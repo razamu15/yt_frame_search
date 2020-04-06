@@ -274,6 +274,9 @@ app.post('/analyze_image', async (req, res) => {
         type: "LANDMARK_DETECTION"
       },
       {
+      "type": "OBJECT_LOCALIZATION"
+      },
+      {
         type: "TEXT_DETECTION"
       },
       {

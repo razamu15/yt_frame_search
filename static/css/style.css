@@ -58,3 +58,17 @@ IN THE CAPTURE SCREEN SHOT BY TIMESTAMP INPUT FORM */
 .canvas_btns {
   margin: 20px 0px;
 }
+
+/* LOGO TINGS */
+@media screen and (max-width: 600px) {
+  svg {
+    margin-top: -20.5px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  svg{
+    margin-top: -17px;
+    /* color: #ff9800; */
+  }
+}
