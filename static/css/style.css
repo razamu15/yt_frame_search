@@ -16,7 +16,7 @@
 /* MY ADDITIONS */
 /* MOSTLY FOR DEALING WITH THE VALIGN-WRAPPER BREAK FOR MATERIAL.CSS GRID
 IN THE CAPTURE SCREEN SHOT BY TIMESTAMP INPUT FORM */
-#screen_shot_controls {
+#screen_capture_form {
   /* margin-top: 10px; */
   display: grid;
   gap: 1rem;
