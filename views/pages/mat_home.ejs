@@ -2,525 +2,591 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-  <title>Starter Template - Materialize</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>Starter Template - Materialize</title>
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 
 <body>
-  <!-- NAVIGATION BAR -->
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="#">Navbar Link</a></li>
-      </ul>
+    <!-- NAVIGATION BAR -->
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
 
-      <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">Navbar Link</a></li>
-      </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
-
-  <!-- MAIN FRONT CARD -->
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header center orange-text">Starter Template</h1>
-      <div class="row center">
-        <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
-      </div>
-      <div class="row center">
-        <!-- YOUTUBE URL FORM DIV -->
-        <form id="video_form" class="row valign-wrapper">
-          <div class="input-field col s10">
-            <input id="yt_url" name="yt_url" type="text" class="validate" pattern="(https:\/\/)?(www\.)?youtube\.com\/watch\?v=[a-zA-z0-9]{11}.*" required>
-            <label for="yt_url">Youtube URL</label>
-            <span class="helper-text" data-error="Invalid Youtube Url"
-              data-success="right">https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s</span>
-          </div>
-          <div class="col s2">
-            <button class="btn waves-effect waves-light" type="submit" name="action">Go
-              <i class="material-icons right">send</i>
-            </button>
-          </div>
-        </form>
-      </div>
-      <br> <!-- TOOK OUT A LINE BREAK HERE -->
-    </div>
-  </div>
-
-
-  <!-- VIDEO AND SCREEN CAP CONTROLS -->
-  <div id="video_cont_parent" class="container" hidden>
-    <div class="section">
-        <div id="video_cont">
+            <ul id="nav-mobile" class="sidenav">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
+            <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
-    </div>
+    </nav>
 
-    <!-- VIDEO CAPTURE CONTROLS -->
-    <div class="section">
-
-
-      <form id="screen_capture_form">
-        <!-- TODO UPDATE FORM VIDEO SUBMIT FORM -->
-
-        <div class="div_item">
-          <label>
-            <input id="from_video" name="frame_source" value="current" onclick="toggle_ts(this)" type="radio" checked />
-            <span>Current Video Frame</span>
-          </label>
-        </div>
-        <div class="div_item" id="grid_item_input">
-          <label>
-            <input type="radio" id="from_ts" name="frame_source" value="timestamp" onclick="toggle_ts(this)"/>
-            <span>By Timestamp</span>
-            <div id="radio_input_div" class="input-field inline">
-              <input type="text" id="time_stamp" name="time_stamp" placeholder="4:43"
-                    pattern="[0-9]{1,2}:[0-5][0-9]" maxlength="5" class="validate" disabled>
+    <!-- MAIN FRONT CARD -->
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+            <br><br>
+            <h1 class="header center orange-text">Starter Template</h1>
+            <div class="row center">
+                <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
             </div>
-          </label>
+            <div class="row center">
+                <!-- YOUTUBE URL FORM DIV -->
+                <form id="video_form" class="row valign-wrapper">
+                    <div class="input-field col s10">
+                        <input id="yt_url" name="yt_url" type="text" class="validate"
+                            pattern="(https:\/\/)?(www\.)?youtube\.com\/watch\?v=[a-zA-z0-9]{11}.*" required>
+                        <label for="yt_url">Youtube URL</label>
+                        <span class="helper-text" data-error="Invalid Youtube Url"
+                            data-success="right">https://www.youtube.com/watch?v=ebeNeQFUMa0&t=62s</span>
+                    </div>
+                    <div class="col s2">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Go
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <br> <!-- TOOK OUT A LINE BREAK HERE -->
         </div>
-        <div class="div_item">
-          <button class="btn waves-effect waves-light" type="submit" name="action">Capture
-            <i class="material-icons right">photo_camera</i>
-          </button>
+    </div>
+
+
+    <!-- VIDEO AND SCREEN CAP CONTROLS -->
+    <div id="video_cont_parent" class="container" hidden>
+        <div class="section">
+            <div id="video_cont">
+            </div>
         </div>
-        <!-- <button class="btn waves-effect waves-light" type="submit" name="action">Capture & Analyze
+
+        <!-- VIDEO CAPTURE CONTROLS -->
+        <div class="section">
+
+
+            <form id="screen_capture_form">
+                <!-- TODO UPDATE FORM VIDEO SUBMIT FORM -->
+
+                <div class="div_item">
+                    <label>
+                        <input id="from_video" name="frame_source" value="current" onclick="toggle_ts(this)"
+                            type="radio" checked />
+                        <span>Current Video Frame</span>
+                    </label>
+                </div>
+                <div class="div_item" id="grid_item_input">
+                    <label>
+                        <input type="radio" id="from_ts" name="frame_source" value="timestamp"
+                            onclick="toggle_ts(this)" />
+                        <span>By Timestamp</span>
+                        <div id="radio_input_div" class="input-field inline">
+                            <input type="text" id="time_stamp" name="time_stamp" placeholder="4:43"
+                                pattern="[0-9]{1,2}:[0-5][0-9]" maxlength="5" class="validate" disabled>
+                        </div>
+                    </label>
+                </div>
+                <div class="div_item">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Capture
+                        <i class="material-icons right">photo_camera</i>
+                    </button>
+                </div>
+                <!-- <button class="btn waves-effect waves-light" type="submit" name="action">Capture & Analyze
             <i class="material-icons right">photo_camera</i>
           </button> -->
-    </form>
+            </form>
 
 
 
 
-    </div>
-
-    <!-- divider -->
-    <div class="section">
-        <div class="row">
-          <div class="divider"></div>
         </div>
-      </div>
-  </div>
 
-
-  <!-- SCREENSHOT CANVAS AND ANALYSIS & DOWNLOAD BUTTON  -->
-  <div class="container" id="canvas_actions" hidden>
-    <div class="row center">
-      <canvas id="canvas"></canvas>
-    </div>
-    <div class="row">
-
-      <div class="canvas_btns col s12 m6 center-align"><a id="down_link" download="screenshot.png" class="waves-effect waves-light btn-large"><i
-            class="material-icons left">file_download</i>Download</a></div>
-      <div class="canvas_btns col s12 m6 center-align"><a id="search_btn" class="waves-effect waves-light btn-large"><i
-            class="material-icons right">center_focus_weak</i>Analyze</a></div>
-
-    </div>
-
-    <!-- divider -->
-    <div class="section">
-    <div class="row">
-      <div class="divider"></div>
-    </div>
-
-  </div>
-
- 
-</div>
-
-
-  <!-- ANALYSIS RESULTS -->
-  <div id="analysis_parent_cont" class="container" hidden>
-    <div class="section">
-
-      <div id="analysis_loading" class="row" hidden>
-        <div class="col s6 offset-s3">
-          <h5 class="center-align"> Loading...</h5>
-          <div class="progress">
-            <div class="indeterminate"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="analysis" class="row" hidden>
-        <ul class="collapsible">
-            <li>
-                <div class="collapsible-header"><i class="material-icons">center_focus_weak</i>Image Content Guess</div>
-                <div class="collapsible-body analysis_category"><span>Lorem ipsum dolor sit amet.</span></div>
-            </li>
-            <li>
-            <div class="collapsible-header"><i class="material-icons">search</i>Image Search Results</div>
-            <div class="collapsible-body analysis_category">
-              <span>Lorem ipsum dolor sit amet.</span>
+        <!-- divider -->
+        <div class="section">
+            <div class="row">
+                <div class="divider"></div>
             </div>
-          </li>
-          <li>
-            <div class="collapsible-header"><i class="material-icons">landscape</i>Landmarks Detected</div>
-            <div class="collapsible-body analysis_category"><span>Lorem ipsum dolor sit amet.</span></div>
-          </li>
-          <li>
-            <div class="collapsible-header"><i class="material-icons">tag_faces</i>Persons Detected</div>
-            <div class="collapsible-body analysis_category"><span>Lorem ipsum dolor sit amet.</span></div>
-          </li>
-          <li>
-            <div class="collapsible-header"><i class="material-icons">text_fields</i>Image Text</div>
-            <div class="collapsible-body analysis_category"><span>Lorem ipsum dolor sit amet.</span></div>
-          </li>
-          <li>
-            <div class="collapsible-header"><i class="material-icons">details</i>Logos Detected</div>
-            <div class="collapsible-body analysis_category"><span>Lorem ipsum dolor sit amet.</span></div>
-          </li>
-
-        </ul>
-      </div>
+        </div>
     </div>
-  </div>
 
-  <!-- divider -->
-  <div class="container">
-    <div class="section">
-      <div class="row">
-        <div class="divider"></div>
-      </div>
+
+    <!-- SCREENSHOT CANVAS AND ANALYSIS & DOWNLOAD BUTTON  -->
+    <div class="container" id="canvas_actions" hidden>
+        <div class="row center">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="row">
+
+            <div class="canvas_btns col s12 m6 center-align"><a id="down_link" download="screenshot.png"
+                    class="waves-effect waves-light btn-large"><i
+                        class="material-icons left">file_download</i>Download</a></div>
+            <div class="canvas_btns col s12 m6 center-align"><a id="search_btn"
+                    class="waves-effect waves-light btn-large"><i
+                        class="material-icons right">center_focus_weak</i>Analyze</a></div>
+        </div>
     </div>
-  </div>
 
 
-  <!-- FEATURES CARD COLECTION -->
-  <div class="container">
-    <div class="section">
+    <!-- ANALYSIS RESULTS -->
+    <div id="analysis_parent_cont" class="container" hidden>
 
-      <!--   Icon Section   -->
-      <div class="row">
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-            <h5 class="center">Speeds up development</h5>
-
-            <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our
-              custom components. Additionally, we refined animations and transitions to provide a smoother experience
-              for developers.</p>
-          </div>
+        <!-- divider -->
+        <div class="section">
+            <div class="row">
+                <div class="divider"></div>
+            </div>
         </div>
 
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-            <h5 class="center">User Experience Focused</h5>
 
-            <p class="light">By utilizing elements and principles of Material Design, we were able to create a framework
-              that incorporates components and animations that provide more feedback to users. Additionally, a single
-              underlying responsive system across all platforms allow for a more unified user experience.</p>
-          </div>
+        <div class="section">
+
+            <div id="analysis_loading" class="row" hidden>
+                <div class="col s6 offset-s3">
+                    <h5 class="center-align"> Loading...</h5>
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analysis" class="row" hidden>
+                <ul class="collapsible">
+                    <li class="webDetection">
+                        <div class="collapsible-header"><i class="material-icons">search</i>Image Search Results</div>
+                        <div class="collapsible-body analysis_category webDetection">
+                            <span>Lorem ipsum dolor sit amet.</span>
+                        </div>
+                    </li>
+                    <li class="labelAnnotations">
+                        <div class="collapsible-header"><i class="material-icons">center_focus_weak</i>Image Content
+                            Guess</div>
+                        <div class="collapsible-body analysis_category labelAnnotations">
+                            <span>Lorem ipsum dolor sit amet.</span></div>
+                    </li>
+                    <li class="landmarkAnnotations">
+                        <div class="collapsible-header"><i class="material-icons">landscape</i>Landmarks Detected</div>
+                        <div class="collapsible-body analysis_category landmarkAnnotations"><span>Lorem ipsum dolor
+                                sit amet.</span></div>
+                    </li>
+                    <li class="faceAnnotations">
+                        <div class="collapsible-header"><i class="material-icons">tag_faces</i>Persons Detected</div>
+                        <div class="collapsible-body analysis_category faceAnnotations"><span>Lorem ipsum dolor sit
+                                amet.</span></div>
+                    </li>
+                    <li class="textAnnotations">
+                        <div class="collapsible-header"><i class="material-icons">text_fields</i>Image Text</div>
+                        <div class="collapsible-body analysis_category textAnnotations"><span>Lorem ipsum dolor sit
+                                amet.</span></div>
+                    </li>
+                    <li class="logoAnnotations">
+                        <div class="collapsible-header"><i class="material-icons">details</i>Logos Detected</div>
+                        <div class="collapsible-body analysis_category logoAnnotations"><span>Lorem ipsum dolor sit
+                                amet.</span></div>
+                    </li>
+
+                </ul>
+            </div>
         </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-            <h5 class="center">Easy to work with</h5>
-
-            <p class="light">We have provided detailed documentation as well as specific code examples to help new users
-              get started. We are also always open to feedback and can answer any questions a user may have about
-              Materialize.</p>
-          </div>
-        </div>
-
-      </div>
-
     </div>
-    <br><br>
-  </div>
 
-  <footer class="page-footer orange">
+    <!-- divider -->
     <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our
-            full time job. Any amount would help support and continue development on this project and is greatly
-            appreciated.</p>
-
-
+        <div class="section">
+            <div class="row">
+                <div class="divider"></div>
+            </div>
         </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
     </div>
-    <div class="footer-copyright">
-      <div class="container">
-        Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
+
+
+    <!-- FEATURES CARD COLECTION -->
+    <div class="container">
+        <div class="section">
+
+            <!--   Icon Section   -->
+            <div class="row">
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
+                        <h5 class="center">Speeds up development</h5>
+
+                        <p class="light">We did most of the heavy lifting for you to provide a default stylings that
+                            incorporate our
+                            custom components. Additionally, we refined animations and transitions to provide a smoother
+                            experience
+                            for developers.</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
+                        <h5 class="center">User Experience Focused</h5>
+
+                        <p class="light">By utilizing elements and principles of Material Design, we were able to create
+                            a framework
+                            that incorporates components and animations that provide more feedback to users.
+                            Additionally, a single
+                            underlying responsive system across all platforms allow for a more unified user experience.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+                        <h5 class="center">Easy to work with</h5>
+
+                        <p class="light">We have provided detailed documentation as well as specific code examples to
+                            help new users
+                            get started. We are also always open to feedback and can answer any questions a user may
+                            have about
+                            Materialize.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <br><br>
     </div>
-  </footer>
+
+    <footer class="page-footer orange">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Company Bio</h5>
+                    <p class="grey-text text-lighten-4">We are a team of college students working on this project like
+                        it's our
+                        full time job. Any amount would help support and continue development on this project and is
+                        greatly
+                        appreciated.</p>
+
+
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">Settings</h5>
+                    <ul>
+                        <li><a class="white-text" href="#!">Link 1</a></li>
+                        <li><a class="white-text" href="#!">Link 2</a></li>
+                        <li><a class="white-text" href="#!">Link 3</a></li>
+                        <li><a class="white-text" href="#!">Link 4</a></li>
+                    </ul>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">Connect</h5>
+                    <ul>
+                        <li><a class="white-text" href="#!">Link 1</a></li>
+                        <li><a class="white-text" href="#!">Link 2</a></li>
+                        <li><a class="white-text" href="#!">Link 3</a></li>
+                        <li><a class="white-text" href="#!">Link 4</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+            </div>
+        </div>
+    </footer>
 
 
 
-  <!--  Scripts-->
-  <!-- <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
-  <script src="js/materialize.min.js"></script>
-  <script src="js/init.js"></script>
+    <!--  Scripts-->
+    <!-- <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+    <script src="js/materialize.min.js"></script>
+    <script src="js/init.js"></script>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>
-    // initialize materialize css components
-    M.AutoInit(); 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        // initialize materialize css components
+        M.AutoInit();
 
-    //var token = ; // TODO <- server generated key thing to prevent cross site scripting
-    var video_id = null;
-    var img_blob = null;
-    var img_ts = null;
+        //var token = ; // TODO <- server generated key thing to prevent cross site scripting
+        var video_id = null;
+        var img_blob = null;
+        var img_ts = null;
 
-    $("#video_form").submit(function (event) {
-        // we prevent the form from making a post request
-        event.preventDefault();
+        $("#video_form").submit(function (event) {
+            // we prevent the form from making a post request
+            event.preventDefault();
 
-        // empty the divs and canvas in case content from a previous user action is there
-        let canvas = document.getElementById('canvas');
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-        $("#analysis_parent_cont").hide();
-        $(".analysis_category").empty();
+            // empty the divs and canvas in case content from a previous user action is there
+            let canvas = document.getElementById('canvas');
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            $("#analysis_parent_cont").hide();
+            $(".analysis_category").empty();
 
-        // get the youtube_url from the form
-        let form_data = $(this).serializeArray();
-        // the form will only contain one item at index 0
-        let url = form_data[0].value
-        // the first index after the split will always be youtube so we know the second is query params
-        query_params = new URLSearchParams(url.split("watch?")[1]);
-        // call the add_video function with the video id parameter retreived from the url
-        add_video(query_params.get("v"));
-    })
-
-    function add_video(youtubeID) {
-        // first empty the container in case if there is already a video there
-        $("#video_cont").empty();
-        // add a video container
-        let vid_route_params = new URLSearchParams();
-        vid_route_params.set("video_id", youtubeID);
-        vid_route_params.set("token", "<%- token %>");
-        $("#video_cont").append(
-            `<video id="video" width="100%" class="responsive-video" src="/get_video?${vid_route_params.toString()}" controls> 
-                This browser does not support the HTML5 video element.
-            </video>`
-        );
-
-        //MATERIALIZE Tings
-        //may want to have a video element already there hidden and just set its src and unhide the parent continer div
-        // for now though we are shoulfing the continaer div and also adding the video tag
-        $("#video_cont_parent").show();
-
-
-        // set an error events listener that will send an alert to the user if something goes wrong
-        $("#video").on("error waiting stalled", function (event) {
-            console.error(event);
-            alert("something went wrong in video playback please try again");
-            $(this).get(0).pause();
+            // get the youtube_url from the form
+            let form_data = $(this).serializeArray();
+            // the form will only contain one item at index 0
+            let url = form_data[0].value
+            // the first index after the split will always be youtube so we know the second is query params
+            query_params = new URLSearchParams(url.split("watch?")[1]);
+            // call the add_video function with the video id parameter retreived from the url
+            add_video(query_params.get("v"));
         })
 
-        // set global variable
-        video_id = youtubeID;
-        // show the capture screenshot controls
-        $("#screen_capture_ctrls").show();
-    }
+        function add_video(youtubeID) {
+            // first empty the container in case if there is already a video there
+            $("#video_cont").empty();
+            // add a video container
+            let vid_route_params = new URLSearchParams();
+            vid_route_params.set("video_id", youtubeID);
+            vid_route_params.set("token", "<%- token %>");
+            $("#video_cont").append(
+                `<video id="video" width="100%" class="responsive-video" src="/get_video?${vid_route_params.toString()}" controls> 
+                This browser does not support the HTML5 video element.
+            </video>`
+            );
 
-    $("#screen_capture_form").submit(function (event) {
-        // stop the form from making a post request
-        event.preventDefault();
+            //MATERIALIZE Tings
+            //may want to have a video element already there hidden and just set its src and unhide the parent continer div
+            // for now though we are shoulfing the continaer div and also adding the video tag
+            $("#video_cont_parent").show();
 
-        // pause the video before we do anything so that the scene doesnt shift
-        let video = document.getElementById('video');
-        video.pause();
 
-        // empty the analysis div in case content from a previous user action is there
-        $("#analysis_parent_cont").hide();
-        $(".analysis_category").empty();
-        // set cavas to leading
-        // DISABLE FOR NOW bcx of MATERIAL tings, may choose to use material loadder later on
-        //$("#canvas_loader_frame").show();
+            // set an error events listener that will send an alert to the user if something goes wrong
+            $("#video").on("error waiting stalled", function (event) {
+                console.error(event);
+                alert("something went wrong in video playback please try again");
+                $(this).get(0).pause();
+            })
 
-        // get the form input and see which option user picked
-        let form_data = $(this).serializeArray();
+            // set global variable
+            video_id = youtubeID;
+            // show the capture screenshot controls
+            $("#screen_capture_ctrls").show();
+        }
 
-        let frame_src = form_data.find(function (obj) {
-            return obj.name === "frame_source";
-        }).value;
+        $("#screen_capture_form").submit(function (event) {
+            // stop the form from making a post request
+            event.preventDefault();
 
-        let ts = null;
-        // if the capture is by timestamp we need to seek the video to that time
-        if (frame_src === "timestamp") {
-            // get the timestamp value from the from
-            ts = form_data.find(function (obj) {
-                return obj.name === "time_stamp";
+            // pause the video before we do anything so that the scene doesnt shift
+            let video = document.getElementById('video');
+            video.pause();
+
+            // empty the analysis div in case content from a previous user action is there
+            $("#analysis_parent_cont").hide();
+            $(".analysis_category").empty();
+            // set cavas to leading
+            // DISABLE FOR NOW bcx of MATERIAL tings, may choose to use material loadder later on
+            //$("#canvas_loader_frame").show();
+
+            // get the form input and see which option user picked
+            let form_data = $(this).serializeArray();
+
+            let frame_src = form_data.find(function (obj) {
+                return obj.name === "frame_source";
             }).value;
-            // calculate the seconds from the timestamp
-            let times = ts.split(":");
-            // the parseint calls are safe because of the regex pattern on the timestamp input field
-            let total_seconds = 60 * parseInt(times[0]) + parseInt(times[1]);
-            // make sure the seek time is the valid range
-            if (total_seconds < 0 || total_seconds > video.duration) {
-                // alert the user saying timestamp is not valid
-                // $("#canvas_loader_frame").hide(); see line 349 MATERIAL tings
-                alert("Timestamp not valid");
+
+            let ts = null;
+            // if the capture is by timestamp we need to seek the video to that time
+            if (frame_src === "timestamp") {
+                // get the timestamp value from the from
+                ts = form_data.find(function (obj) {
+                    return obj.name === "time_stamp";
+                }).value;
+                // calculate the seconds from the timestamp
+                let times = ts.split(":");
+                // the parseint calls are safe because of the regex pattern on the timestamp input field
+                let total_seconds = 60 * parseInt(times[0]) + parseInt(times[1]);
+                // make sure the seek time is the valid range
+                if (total_seconds < 0 || total_seconds > video.duration) {
+                    // alert the user saying timestamp is not valid
+                    // $("#canvas_loader_frame").hide(); see line 349 MATERIAL tings
+                    alert("Timestamp not valid");
+                    return;
+                }
+                ts = total_seconds;
+                video.currentTime = total_seconds;
+                // when we capture by timestamp, we need to set an event lsitener that will make the call to draw frame 
+                // so we draw the correct frame when the data after the seek has been loaded in the video
+                video.addEventListener('canplay', function drawing_event(event) {
+                    // remove the event listener immediately because we only want to do this once
+                    video.removeEventListener('canplay', drawing_event);
+                    draw_frame();
+                });
+            } else {
+                // frame_src === "current"
+                draw_frame();
+                ts = video.currentTime;
+            }
+            // set the global timestamp variable
+            img_ts = ts;
+        })
+
+        function draw_frame() {
+            // before drawing hide the loading frame
+            // $("#canvas_loader_frame").hide();   see line 349 MATERIAL tings
+            // get the video and draw its current frame onto the canvas
+            let canvas = document.getElementById('canvas');
+            let video = document.getElementById('video');
+            //let video = document.getElementById('video');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            // convert the image from the canvas to a blob
+            canvas.toBlob((blob) => {
+                img_blob = blob;
+                link = (window.URL ? URL : webkitURL).createObjectURL(blob);
+                $("#down_link").attr('href', link);
+            });
+            // show the download screenshot and reverse search buttons once we have the image drawn
+            $("#canvas_actions").show();
+        }
+
+        $("#search_btn").click(function (event) {
+            // first we check to make sure the image blob in not null
+            if (img_blob === null || img_ts === null) {
+                alert("you need to capture and image first before analyzing it");
                 return;
             }
-            ts = total_seconds;
-            video.currentTime = total_seconds;
-            // when we capture by timestamp, we need to set an event lsitener that will make the call to draw frame 
-            // so we draw the correct frame when the data after the seek has been loaded in the video
-            video.addEventListener('canplay', function drawing_event(event) {
-                // remove the event listener immediately because we only want to do this once
-                video.removeEventListener('canplay', drawing_event);
-                draw_frame();
-            });
-        } else {
-            // frame_src === "current"
-            draw_frame();
-            ts = video.currentTime;
+            // hide the previous analysis and show the loading sign
+            $("#analysis_parent_cont").show();
+            $("#analysis").hide();
+            $("#analysis_loading").show();
+
+            // build the query params for the post route
+            let analysis_params = new URLSearchParams();
+            analysis_params.set("screen_ts", img_ts);
+            analysis_params.set("video_id", video_id);
+            analysis_params.set("token", "<%- token %>");
+
+            // create and send the HTTP request with the image data
+            var req = new XMLHttpRequest();
+            req.open("POST", "/analyze_image?" + analysis_params.toString(), true);
+            req.onload = function (event) {
+                // check the response status and if its good pass the results to a function that will show them on the webpage
+                if (this.status != 200) {
+                    alert("analysis failed please try again");
+                    console.error("analysis failed");
+                } else {
+                    render_vision_results(JSON.parse(this.response));
+                }
+            };
+            req.send(img_blob);
+        })
+
+        function show_siblings(btn_elem) {
+            $(btn_elem).siblings().show();
         }
-        // set the global timestamp variable
-        img_ts = ts;
-    })
 
-    function draw_frame() {
-        // before drawing hide the loading frame
-        // $("#canvas_loader_frame").hide();   see line 349 MATERIAL tings
-        // get the video and draw its current frame onto the canvas
-        let canvas = document.getElementById('canvas');
-        let video = document.getElementById('video');
-        //let video = document.getElementById('video');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        // convert the image from the canvas to a blob
-        canvas.toBlob((blob) => {
-            img_blob = blob;
-            link = (window.URL ? URL : webkitURL).createObjectURL(blob);
-            $("#down_link").attr('href', link);
-        });
-        // show the download screenshot and reverse search buttons once we have the image drawn
-        $("#canvas_actions").show();
-    }
+        function add_list_to_markup(elem, obj_array, data_prop, initial_amount) {
+            // declare an append counter
+            let append_counter = 0;
 
-    $("#search_btn").click(function (event) {
-        // first we check to make sure the image blob in not null
-        if (img_blob === null || img_ts === null) {
-            alert("you need to capture and image first before analyzing it");
-            return;
-        }
-        // hide the previous analysis and show the loading sign
-        $("#analysis_parent_cont").show();
-        $("#analysis").hide();
-        $("#analysis_loading").show();
+            // for each obj in the array 
+            obj_array.forEach(obj => {
+                let data = obj[data_prop];
+                // if the data is not blank/empty, append the data_prop value from the obj on the dom element
+                if (data != "") {
+                    // for the first n items up to initial amount, show them
+                    if (append_counter <= initial_amount) {
+                        elem.append("<p>" + data + "</p>");
+                    } else {
+                        // and the rest append the elment as hidden
+                        elem.append("<p hidden>" + data + "</p>");
+                    }
+                    // increment the counter
+                    append_counter++;
+                }
+            })
 
-        // build the query params for the post route
-        let analysis_params = new URLSearchParams();
-        analysis_params.set("screen_ts", img_ts);
-        analysis_params.set("video_id", video_id);
-        analysis_params.set("token", "<%- token %>");
-
-        // create and send the HTTP request with the image data
-        var req = new XMLHttpRequest();
-        req.open("POST", "/analyze_image?" + analysis_params.toString(), true);
-        req.onload = function (event) {
-            // check the response status and if its good pass the results to a function that will show them on the webpage
-            if (this.status != 200) {
-                alert("analysis failed please try again");
-                console.error("analysis failed");
-            } else {
-                render_vision_results(JSON.parse(this.response));
+            // if append counter > initial_amount then add a show more button that will turn all of the elem's children to show
+            if (append_counter > initial_amount) {
+                elem.append('<a class="waves-effect waves-teal btn-flat" onclick="show_siblings(this)">show more</a>');
             }
-        };
-        req.send(img_blob);
-    })
-
-    function render_vision_results(vision_resp) {
-        console.log(vision_resp);
-        // first empty the div from any content that may be previously
-        $(".analysis_category").empty();
-        $("#analysis_loading").hide();
-        $("#analysis").show();
-
-        // // google starter code ripoff for printing web annotations
-        // const webDetection = vision_resp.webDetection;
-        // if (webDetection.fullMatchingImages.length) {
-        //     console.log(`Full matches found: ${webDetection.fullMatchingImages.length}`);
-        //     $("#analysis").append('<ul id="full_matching"><h2>Full Matching Images Found on the Web</h2></ul>');
-        //     webDetection.fullMatchingImages.forEach(image => {
-        //         $("#full_matching").append(`<li>  URL: ${image.url}</li>`);
-        //         //console.log(`  Score: ${image.score}`);
-        //     });
-        // }
-
-        // if (webDetection.partialMatchingImages.length) {
-        //     console.log(`Partial matches found: ${webDetection.partialMatchingImages.length}`);
-        //     $("#analysis").append('<ul id="partial_matching"><h2>Partial Matching Images Found on the Web</h2></ul>');
-        //     webDetection.partialMatchingImages.forEach(image => {
-        //         $("#partial_matching").append(`<li>  URL: ${image.url}</li>`);
-        //         //console.log(`  Score: ${image.score}`);
-        //     });
-        // }
-
-        // if (webDetection.webEntities.length) {
-        //     console.log(`Web entities found: ${webDetection.webEntities.length}`);
-        //     $("#analysis").append('<ul id="web_entities"><h2>Related Items Found on the Web</h2></ul>');
-        //     webDetection.webEntities.forEach(webEntity => {
-        //         $("#web_entities").append(`<li>  Description: ${webEntity.description}</li>`);
-        //         //console.log(`  Score: ${webEntity.score}`);
-        //     });
-        // }
-
-        // if (webDetection.bestGuessLabels.length) {
-        //     console.log(`Best guess labels found: ${webDetection.bestGuessLabels.length}`);
-        //     $("#analysis").append('<ul id="best_guess"><h2>Image Content Guess</h2></ul>');
-        //     webDetection.bestGuessLabels.forEach(label => {
-        //         $("#best_guess").append(`<li>  Label: ${label.label}</li>`);
-        //     });
-        // }
-
-        // const labels = vision_resp.labelAnnotations;
-        // console.log(`Best guess labels found: ${labels.length}`);
-        // $("#analysis").append('<ul id="labels"><h2>Image Labels</h2></ul>');
-        // labels.forEach((label) => {
-        //     $("#labels").append(`<li>  Label: ${label.description}</li>`);
-        // });
-    }
-
-    function toggle_ts(radio_ele) {
-        if (radio_ele.value === "current" && radio_ele.checked) {
-            // disable the time stamp text input field
-            $('#time_stamp').attr('disabled', true);
-        } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
-            // enable the time stamp text input field
-            $('#time_stamp').attr('disabled', false);
-            $('#time_stamp').attr('required', true);
         }
-    }
 
-</script>
+
+        function render_vision_results(vision_resp) {
+            console.log(vision_resp);
+            // first empty the div from any content that may be previously
+            $(".analysis_category").empty();
+            $("#analysis_loading").hide();
+            $("#analysis").show();
+
+            // loop over all the properties of the vision response object
+            for (var prop in vision_resp) {
+                if (Object.prototype.hasOwnProperty.call(vision_resp, prop)) {
+
+                    // check if the current property has a div associated to it in the markup
+
+                    let elem = $("li." + prop);
+                    if (elem.length != 0) {
+
+                        // if it does then we populate div with data ow hide the div
+                        if (vision_resp[prop].length === 0) {
+                            // hide the div
+                            elem.hide();
+                        } else {
+                            // populate with data
+                            elem = $("div." + prop);
+                            // this is the default key for getting data from any category array inside the vision resposne
+                            let data_prop = "description";
+
+                            // the element of the same id exists so we can populate it with the data
+                            if (prop === "webDetection") {
+                                // deal with web detection specially - loop through the 4 subcategories
+                                let web_catgs = ["bestGuessLabels", "webEntities", "pagesWithMatchingImages", "visuallySimilarImages"];
+                                web_catgs.forEach(web_category => {
+                                    // define speacial data prop
+                                    if (web_category === "bestGuessLabels") {
+                                        data_prop = "label";
+                                    } else if (web_category.includes("Images")) { // the actual images linking things
+                                        data_prop = "url";
+                                    } else if (web_category === "webEntities") {
+                                        data_prop = "description";
+                                    }
+
+                                    // if the subcategory is length 0 then dont do anything
+                                    if (vision_resp[prop][web_category].length != 0) {
+                                        elem.append('<h5>' + web_category + '</h5>');
+                                        let category_div = $("<div>", {id: web_category + "_cont", "class": "analysis_subcategory"});
+                                        elem.append(category_div);
+                                        // call the function to put the list content into the dom element
+                                        add_list_to_markup(category_div, vision_resp[prop][web_category], data_prop, 5);
+                                        // also check to make sure we dont put the devider if this is the last subcategory
+                                        if (web_catgs.indexOf(web_category) < web_catgs.length - 1) {
+                                            elem.append('<div class="divider"></div>');
+                                        }
+                                    }
+                                    // havent decided on how to deal with this
+                                    // if (web_category === "full/partial/MatchingImages") {
+                                    //     things = ["full", "partial"];
+                                    // }
+                                })
+                            } else {
+                                add_list_to_markup(elem, vision_resp[prop], data_prop, 5);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        function toggle_ts(radio_ele) {
+            if (radio_ele.value === "current" && radio_ele.checked) {
+                // clear and disable the time stamp text input field
+                $('#time_stamp').val('');
+                $('#time_stamp').attr('disabled', true);
+            } else if (radio_ele.value === "timestamp" && radio_ele.checked) {
+                // enable the time stamp text input field
+                $('#time_stamp').attr('disabled', false);
+                $('#time_stamp').attr('required', true);
+            }
+        }
+
+    </script>
 
 </body>
 
