@@ -159,13 +159,16 @@ app.get('/get_video', async (req, res) => {
   // we  make the call for the video using the double pipe so that its basically
   // the same as calling the original but w/o the CORS
 
-  
-  console.log(def_stream.stream_link);
 
+  console.log("video url piping request to:", def_stream.stream_link);
 
 
   const x = request(def_stream.stream_link);
-  req.pipe(x);
+  req.pipe(x)
+    .on('response', function(response) {
+      console.log(response.statusCode) // 200
+      console.log(response.headers['content-type']) // 'image/png'
+  });
   x.pipe(res);
 
   // after we make whatever request we need, update the database caches
