@@ -31,11 +31,11 @@
             <!-- <span>YT Screen Analyzer</span> -->
             </a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="#">Contact</a></li>
+                <li><a class="modal-trigger" href="#contact_modal">Contact</a></li>
             </ul>
 
             <ul id="nav-mobile" class="sidenav">
-                <li><a href="#">Contact</a></li>
+                <li><a class="modal-trigger" href="#contact_modal">Contact</a></li>
             </ul>
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
@@ -72,6 +72,44 @@
         </div>
     </div>
 
+    <!-- Modal Structure / PLACING THIS AFTER THE MAIN CARD-->
+    <div id="contact_modal" class="modal">
+        <div class="modal-content">
+        <h4>Contact</h4>
+        <p>Please use this form to address any issues or for general inquiries</p>
+
+        <div class="row">
+            <form id="contact_form" class="col s12">
+              <div class="row">
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="contact_name" name="contact_name" type="text" class="validate">
+                    <label for="contact_name">Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">email</i>
+                    <input id="contact_email" name="contact_email" type="text" class="validate">
+                    <label for="contact_email">Email</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">format_align_justify</i>
+                  <textarea id="contact_text" name="contact_text" class="materialize-textarea"></textarea>
+                  <label for="textarea1">Message</label>
+                </div>
+              </div>
+            </form>
+        </div>
+
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+            <button class="btn waves-effect waves-light modal-close" type="submit" name="action" form="contact_form">Send
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </div>
 
     <!-- VIDEO AND SCREEN CAP CONTROLS -->
     <div id="video_cont_parent" class="container" hidden>
@@ -342,7 +380,7 @@
 
 
             // set an error events listener that will send an alert to the user if something goes wrong
-            $("#video").on("error waiting stalled", function (event) {
+            $("#video").on("error stalled", function (event) {
                 console.error(event);
                 alert("something went wrong in video playback please try again");
                 $(this).get(0).pause();
@@ -569,6 +607,22 @@
                 $('#time_stamp').attr('required', true);
             }
         }
+
+        $("#contact_form").submit(function (event) {
+            // prevent the form from making a post request
+            event.preventDefault();
+            // get form data and prepare ajax request with it
+            let form_data = $(this).serialize();
+            console.log(form_data);
+            $.post('/contact_submit?token=<%- token %>', $(this).serialize())
+             .done(function (data){
+                // show toast to user
+                M.toast({html: 'Message Delivered'})
+             })
+        })
+
+
+// var video_id=null,img_blob=null,img_ts=null;function add_video(e){$("#video_cont").empty();let t=new URLSearchParams;t.set("video_id",e),t.set("token","<%- token %>"),$("#video_cont").append(`<video id="video" width="100%" class="responsive-video" src="/get_video?${t.toString()}" controls> \n                This browser does not support the HTML5 video element.\n            </video>`),$("#video_cont_parent").show(),$("#video").on("error waiting stalled",function(e){console.error(e),alert("something went wrong in video playback please try again"),$(this).get(0).pause()}),video_id=e,$("#screen_capture_ctrls").show()}function draw_frame(){let e=document.getElementById("canvas"),t=document.getElementById("video");e.width=t.videoWidth,e.height=t.videoHeight,e.getContext("2d").drawImage(t,0,0,t.videoWidth,t.videoHeight),e.toBlob(e=>{img_blob=e,link=(window.URL?URL:webkitURL).createObjectURL(e),$("#down_link").attr("href",link)}),$("#canvas_actions").show()}function show_siblings(e){$(e).siblings().show()}function add_list_to_markup(e,t,i,a){let n=0;t.forEach(t=>{let s=t[i];""!=s&&(n<=a?e.append("<p>"+s+"</p>"):e.append("<p hidden>"+s+"</p>"),n++)}),n>a&&e.append('<a class="waves-effect waves-teal btn-flat" onclick="show_siblings(this)">show more</a>')}function render_vision_results(e){for(var t in console.log(e),$(".analysis_category").empty(),$("#analysis_loading").hide(),$("#analysis").show(),e)if(Object.prototype.hasOwnProperty.call(e,t)){let i=$("li."+t);if(0!=i.length)if(0===e[t].length)i.hide();else{i=$("div."+t);let a="description";if("webDetection"===t){let n=["bestGuessLabels","webEntities","pagesWithMatchingImages","visuallySimilarImages"];n.forEach(s=>{if("bestGuessLabels"===s?a="label":s.includes("Images")?a="url":"webEntities"===s&&(a="description"),0!=e[t][s].length){i.append("<h5>"+s+"</h5>");let o=$("<div>",{id:s+"_cont",class:"analysis_subcategory"});i.append(o),add_list_to_markup(o,e[t][s],a,5),n.indexOf(s)<n.length-1&&i.append('<div class="divider"></div>')}})}else add_list_to_markup(i,e[t],a,5)}}}function toggle_ts(e){"current"===e.value&&e.checked?($("#time_stamp").val(""),$("#time_stamp").attr("disabled",!0)):"timestamp"===e.value&&e.checked&&($("#time_stamp").attr("disabled",!1),$("#time_stamp").attr("required",!0))}$("#video_form").submit(function(e){e.preventDefault();let t=document.getElementById("canvas");t.getContext("2d").clearRect(0,0,t.width,t.height),$("#analysis_parent_cont").hide(),$(".analysis_category").empty();let i=$(this).serializeArray()[0].value;query_params=new URLSearchParams(i.split("watch?")[1]),add_video(query_params.get("v"))}),$("#screen_capture_form").submit(function(e){e.preventDefault();let t=document.getElementById("video");t.pause(),$("#analysis_parent_cont").hide(),$(".analysis_category").empty();let i=$(this).serializeArray(),a=null;if("timestamp"===i.find(function(e){return"frame_source"===e.name}).value){let e=(a=i.find(function(e){return"time_stamp"===e.name}).value).split(":"),n=60*parseInt(e[0])+parseInt(e[1]);if(n<0||n>t.duration)return void alert("Timestamp not valid");a=n,t.currentTime=n,t.addEventListener("canplay",function e(i){t.removeEventListener("canplay",e),draw_frame()})}else draw_frame(),a=t.currentTime;img_ts=a}),$("#search_btn").click(function(e){if(null===img_blob||null===img_ts)return void alert("you need to capture and image first before analyzing it");$("#analysis_parent_cont").show(),$("#analysis").hide(),$("#analysis_loading").show();let t=new URLSearchParams;t.set("screen_ts",img_ts),t.set("video_id",video_id),t.set("token","<%- token %>");var i=new XMLHttpRequest;i.open("POST","/analyze_image?"+t.toString(),!0),i.onload=function(e){200!=this.status?(alert("analysis failed please try again"),console.error("analysis failed")):render_vision_results(JSON.parse(this.response))},i.send(img_blob)}),$("#contact_form").submit(function(e){e.preventDefault();let t=$(this).serialize();console.log(t),$.post("/contact_submit?token=<%- token %>",$(this).serialize()).done(function(e){M.toast({html:"Message Delivered"})})});
 
     </script>
 

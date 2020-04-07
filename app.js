@@ -7,7 +7,7 @@ const config = {
   gcp_project_id: 'plasma-buckeye-268306',
   gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
   api_token_ttl_secs: 30 * 60, // 30 mins * 60 secs/min
-  api_token_limit: 3
+  api_token_limit: 25
 }
 
 // Imports the Google Cloud client library and create the client
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 // ---------------------------------------------------------------------------
 // ###########################################################################
 
-app.get('/mat', (req, res) => {
+app.get('/', (req, res) => {
   // generate the token and render the response to the user first
   let unique_token = uuid.v4();
   res.render('pages/mat_home', { token: unique_token });
@@ -56,18 +56,16 @@ app.get('/mat', (req, res) => {
   });
 })
 
-app.get('/', (req, res) => {
-  // generate the token and render the response to the user first
-  let unique_token = uuid.v4();
-  res.render('pages/home', { token: unique_token });
-  // now store the token in firestore
-  let docRef = db.collection('api_tokens').add({
-    token: unique_token,
+app.post('/contact_submit', (req, res) => {
+  // get the info from the body and pop it into firestore
+  let docRef = db.collection('contact_submissions').add({
+    token: req.query.token,
     creation_time: Firestore.Timestamp.now(),
-    expiry_seconds: config.api_token_ttl_secs,
-    usage: 0,
-    valid: true
+    contact_email: req.body.contact_email,
+    contact_name: req.body.contact_name,
+    contact_text: req.body.contact_text
   });
+  res.sendStatus(200);
 })
 
 function retrieve_video_link(video_id) {
