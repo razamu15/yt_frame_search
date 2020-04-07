@@ -380,7 +380,7 @@
 
 
             // set an error events listener that will send an alert to the user if something goes wrong
-            $("#video").on("error stalled", function (event) {
+            $("#video").on("error", function (event) {
                 console.error(event);
                 alert("something went wrong in video playback please try again");
                 $(this).get(0).pause();

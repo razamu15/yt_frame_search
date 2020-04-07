@@ -1,7 +1,7 @@
 runtime: nodejs12
 
-env_variables:
-  GOOGLE_APPLICATION_CREDENTIALS: "/home/razasaad_1999/yt_frame_search/key.json"
+# env_variables:
+#  GOOGLE_APPLICATION_CREDENTIALS: "/home/razasaad_1999/yt_frame_search/key.json"
 
 instance_class: B1
 basic_scaling:
