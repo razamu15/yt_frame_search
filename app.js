@@ -87,13 +87,27 @@ function retrieve_video_link(video_id) {
             reject({ status: 422, message: "invalid youtube video id" });
           } else {
             let vid_streams = JSON.parse(vid_info.get("player_response"));
-            result = {
-              video_id: video_id,
-              stream_link: vid_streams.streamingData.formats[1].url,
-              // -10 to leave some room for the time between origin server expires field creation vs when mine
-              expires_in_seconds: vid_streams.streamingData.expiresInSeconds - 10
+
+            if (vid_streams.playabilityStatus.status === 'UNPLAYABLE') {
+              reject({ status: 415, message: "youtube video not supported" });
+            } else {
+              console.log(vid_streams);
+            
+              let link;
+              if (vid_streams.streamingData.formats[1]) {
+                link = vid_streams.streamingData.formats[1].url;
+              } else {
+                link = vid_streams.streamingData.formats[0].url;
+              }
+              
+              result = {
+                video_id: video_id,
+                stream_link: link,
+                // -10 to leave some room for the time between origin server expires field creation vs when mine
+                expires_in_seconds: vid_streams.streamingData.expiresInSeconds - 10
+              }
+              resolve(result);
             }
-            resolve(result);
           }
         }
       })
@@ -144,6 +158,12 @@ app.get('/get_video', async (req, res) => {
 
   // we  make the call for the video using the double pipe so that its basically
   // the same as calling the original but w/o the CORS
+
+  
+  console.log(def_stream.stream_link);
+
+
+
   const x = request(def_stream.stream_link);
   req.pipe(x);
   x.pipe(res);
