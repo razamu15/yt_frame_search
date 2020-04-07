@@ -91,7 +91,6 @@ function retrieve_video_link(video_id) {
             if (vid_streams.playabilityStatus.status === 'UNPLAYABLE') {
               reject({ status: 415, message: "youtube video not supported" });
             } else {
-              console.log(vid_streams);
             
               let link;
               if (vid_streams.streamingData.formats[1]) {
@@ -167,7 +166,7 @@ app.get('/get_video', async (req, res) => {
   req.pipe(x)
     .on('response', function(response) {
       console.log(response.statusCode) // 200
-      console.log(response.headers['content-type']) // 'image/png'
+      console.log(response.headers) // 'image/png'
   });
   x.pipe(res);
 
