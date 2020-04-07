@@ -4,8 +4,8 @@ const request = require('request');
 const uuid = require('uuid')
 
 const config = {
-  gcp_project_id: 'plasma-buckeye-268306',
-  gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
+  //gcp_project_id: 'plasma-buckeye-268306',
+  //gcp_key_file_path: '/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json',
   api_token_ttl_secs: 30 * 60, // 30 mins * 60 secs/min
   api_token_limit: 25
 }
@@ -16,10 +16,10 @@ const gcp_client = new vision.ImageAnnotatorClient();
 
 // Import the Firestore library and initialize the object
 const Firestore = require('@google-cloud/firestore');
-const db = new Firestore({
-  projectId: config.gcp_project_id,
-  keyFilename: config.gcp_key_file_path
-});
+const db = new Firestore();
+//  projectId: config.gcp_project_id,
+//  keyFilename: config.gcp_key_file_path
+//});
 
 const app = express();
 // define expres middleware
