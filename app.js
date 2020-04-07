@@ -165,10 +165,16 @@ app.get('/get_video', async (req, res) => {
   const x = request(def_stream.stream_link);
   req.pipe(x)
     .on('response', function(response) {
-      console.log(response.statusCode) // 200
-      console.log(response.headers) // 'image/png'
+      console.log("piped resposne status_code:", response.statusCode, "     piped response content_length:", response.headers['content-length']) // 200
+      //console.log(response.headers) // 'image/png'
   });
-  x.pipe(res);
+  x.pipe(res)
+    .on('response', function(response) {
+      console.log("pipe to page: ", response.headers)
+    })
+    .on('error', function(err) {
+      console.error(err) 
+    });
 
   // after we make whatever request we need, update the database caches
   if (!stream_info.cached || !stream_info.cache_valid) {
