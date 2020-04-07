@@ -29,6 +29,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // define the static folder route for our css and image files
 app.use(express.static('static'));
 
+// app engine deployment setting: https://cloud.google.com/appengine/docs/standard/nodejs/runtime#https_and_forwarding_proxies
+app.set('trust proxy', true);
+
 // Set the cors proxy middleware for express
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -322,7 +325,7 @@ app.post('/analyze_image', async (req, res) => {
 
 })
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
 /**

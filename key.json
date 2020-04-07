@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "plasma-buckeye-268306",
+  "private_key_id": "70749715704f94c9a93ebd4d623de6b32a526f96",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQClUmdbIJxYvgQz\nUJgbKw8Q2SbalVOaupIzp0G5NtHMJMS18mOYaaLPcnK7w5FJD93Ey9B4eagmtxlD\nZ1d/mEAqOf3jy67F/YAcUKflyBuGXjwLK/DMSll8bjGIdlJvfnFpoLpxaVWUCNK5\nJ9ahJ77IlAjQQe3pyp0zShsOyQ8OFXNOOsfDuDGsWSdmFcrfuG6Z5XaSkMJeocNB\nYzG6f7Wuf0nKQNds3T+32ufcKXJ/v4kDTlPxekMFkQrRPn42PXwHuUk44C6Agr6E\nCsSKtLMG9BnSHpJtwXcp1cwdtleIG2FCpskiRyih283Yl1wJgJMFlGGhqhWWheny\n4dTP9lpxAgMBAAECggEAAmHwJGORbUP7yoOIVafmtS7z/OV3CX1T2xO3gkRUfLUw\n8pBWOB2Zn5S+K4+TefKVFx961ymlrz0nS43jOG8IybMBQjWuxKK1JHNTICAkqWiV\nQ/Hzq/YMWRs7coSGBp5TYxrSZQ0IEzSXWNzGnpb0jG55vAqfM6XcYx9XyXxDT8gg\naVHKwNEKcr6k7tY0km9RysiBbj2gO739rVykuiDl/3qzxqKIPtk2rVk6/rUjMQ3J\nqL7pccgCRqYvBUkumkqcA0zkUK4CYRaNEtcv32Wi4zkuRFk05gfQZoDh1J7iZ+iZ\nAv5Jx7KIonCaCPfWw9GlTwHAkSFpFF8TcIQ8Kn6RAQKBgQDeFxdX7sV/b1YKGFTa\nI4UkxnrPU1f8VT7CjFCDzKWKTpXg41h5s2GjprF5Si59V2K1ITRTYk9ylIxVk1Ar\nphW4OktRW0SXvSj6n4PFeShqPKRGlH4oFED3c8BJP7I+eTQpZatlD/dYnUa1AQMe\n3/0hTKAgo6kmpdWJ8u+WugKIoQKBgQC+kGRU+BqacdcoST51PLQ+R1efUeiNSfg7\n1aWPf6On0QSUlYLkmcgsHAdSq2wlN0aLXsMU1clb2abhkNCsa8cw6/Kcxp3gddns\ntsk1Y86c2gOHefDZJFHl8aMKY0+TfXzbAaCEdw3+pPnL2NU53eqtT4B/oohl2gPF\nnaVaNkdv0QKBgAibhIAX9PeXbRI/FyrNLZ/bQW8/n61b8G7B2W0CRXgyy4RHy2oM\nFcCt+TrmMR8Sf/TdMJX6vXGHaFj4uKa4bScSu1CP5PysjCYKgKTqqTJU31kM8EbF\nYi81AULVgScCs47XLelg0QlSLydcvq43qCveOGaLcUbaLoiGLdr9opOBAoGBAJsw\nRbT4s9mQ2fJB665X+EU7njzt3F+rnI9FxuVcwe85hexm8ciu/9gEH2aQmaqZIEcB\nrgb6r1ewoXnSkE3KG9ZYYCSSjyGreASROrzTAgC0fulGQgDj1hpXtToRdE2dhR9p\nbMpTlj8JJTB/7e2JLsNjGjdXKpMff7DgWDdmOrjxAoGARfICgLWUTJ5RIF6QtMLg\ngJgRsLWj5t0yjhBEgkXcXKizmVgKEPeekZYVIWKxeV3ZNu50qUpcs+vlV251S+4a\n/+0JAmoaurWaJaBEqIAAHMedf8ZOZG3kQQRuIknF+xx4kupKctCZ9yGdNgQhv9PY\nQIka069AW8ntuoH5dNb0qwI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "yt-search-test@plasma-buckeye-268306.iam.gserviceaccount.com",
+  "client_id": "109460213111236872718",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/yt-search-test%40plasma-buckeye-268306.iam.gserviceaccount.com"
+}
