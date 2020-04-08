@@ -348,7 +348,7 @@
                         Made with <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
                     </div>
                     <div class="col s6 right-align">
-                        Made by <a class="orange-text text-lighten-3" href="http://tctcraza.io">tctc-raza.io</a>
+                        Made by <a class="orange-text text-lighten-3" href="http://tctc-raza.io">tctc-raza.io</a>
                     </div>
                 </div>
             </div>
@@ -369,11 +369,23 @@
         var video_id = null;
         var img_blob = null;
         var img_ts = null;
-        var processing = null;
+        var processing = false;
+
+        // if this returns false then your good to go, if it returns true then stop
+        function check_set_processing() {
+            let busy_status = processing;
+            processing = true;
+            return busy_status;
+        }
 
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
             event.preventDefault();
+
+            if (check_set_processing()) {
+                alert("Please wait untill previous action is finished.");
+                return;
+            }
 
             // empty the divs and canvas in case content from a previous user action is there
             let canvas = document.getElementById('canvas');
@@ -414,11 +426,9 @@
             </video>`
             );
 
-            //MATERIALIZE Tings
-            //may want to have a video element already there hidden and just set its src and unhide the parent continer div
-            // for now though we are shoulfing the continaer div and also adding the video tag
+            // show the div containing the video element and scroll it into view
             $("#video_cont_parent").show();
-
+            document.getElementById("video").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
 
             // set an error events listener that will send an alert to the user if something goes wrong
             $("#video").on("error", function (event) {
@@ -431,11 +441,18 @@
             video_id = youtubeID;
             // show the capture screenshot controls
             $("#screen_capture_ctrls").show();
+            
+            processing = false;
         }
 
         $("#screen_capture_form").submit(function (event) {
             // stop the form from making a post request
             event.preventDefault();
+
+            if (check_set_processing()) {
+                alert("Please wait untill previous action is finished.");
+                return;
+            }
 
             // pause the video before we do anything so that the scene doesnt shift
             let video = document.getElementById('video');
@@ -447,6 +464,7 @@
             // hide the canvas(in case theres already a canvas there) and show loading for canvas
             $("#canvas_actions").hide();
             $("#loading").show();
+            document.getElementById("loading").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
 
             // get the form input and see which option user picked
             let form_data = $(this).serializeArray();
@@ -469,8 +487,9 @@
                 // make sure the seek time is the valid range
                 if (total_seconds < 0 || total_seconds > video.duration) {
                     // alert the user saying timestamp is not valid
-                    // $("#canvas_loader_frame").hide(); see line 349 MATERIAL tings
+                    $("#loading").hide();
                     alert("Timestamp not valid");
+                    processing = false;
                     return;
                 }
                 ts = total_seconds;
@@ -508,17 +527,27 @@
             // show the download screenshot and reverse search buttons once we have the image drawn
             $("#loading").hide();
             $("#canvas_actions").show();
+            document.getElementById("canvas").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+
+            processing = false;
         }
 
         $("#search_btn").click(function (event) {
+            if (check_set_processing()) {
+                alert("Please wait untill previous action is finished.");
+                return;
+            }
+
             // first we check to make sure the image blob in not null
             if (img_blob === null || img_ts === null) {
                 alert("you need to capture and image first before analyzing it");
+                processing = false;
                 return;
             }
             // hide the previous analysis and show the loading sign
             $("#analysis_parent_cont").hide();
             $("#loading").show();
+            document.getElementById("loading").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
 
             // build the query params for the post route
             let analysis_params = new URLSearchParams();
@@ -535,6 +564,7 @@
                     alert("Analysis failed, Please reload the page and try again");
                     console.error("analysis failed");
                     $("#loading").hide();
+                    processing = false;
 
                 } else {
                     render_vision_results(JSON.parse(this.response));
@@ -644,6 +674,8 @@
             // show all the neccessary divs once the info has been loaded
             $("#loading").hide();
             $("#analysis_parent_cont").show();
+            document.getElementById("analysis").scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            processing = false;
         }
 
         function toggle_ts(radio_ele) {
