@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   // generate the token and render the response to the user first
   let unique_token = uuid.v4();
-  res.render('pages/mat_home', { token: unique_token });
+  res.render('pages/mat_home', { t: unique_token });
   // now store the token in firestore
   let docRef = db.collection('api_tokens').add({
     token: unique_token,
@@ -92,12 +92,20 @@ function retrieve_video_link(video_id) {
               reject({ status: 415, message: "youtube video not supported" });
             } else {
             
-              let link;
-              if (vid_streams.streamingData.formats[1]) {
-                link = vid_streams.streamingData.formats[1].url;
-              } else {
-                link = vid_streams.streamingData.formats[0].url;
-              }
+              let link = null;
+              // loop through the formats array and get the link
+              vid_streams.streamingData.formats.forEach( format_obj => {
+                if (format_obj.qualityLabel === "720p" || link === null) {
+                  
+                  link = format_obj.url;
+                  console.log(format_obj.url);
+                  // now the format obj can sometimes contain a cipher property which then needs to be parsed again
+                  if (format_obj.cipher) {
+                    let cipher_obj = new URLSearchParams(format_obj.cipher);
+                    link = cipher_obj.get('url') ;
+                  }
+                }
+              })
               
               result = {
                 video_id: video_id,
@@ -150,6 +158,10 @@ app.get('/get_video', async (req, res) => {
   try {
     stream_info = await get_video_link(req.query.video_id);
     def_stream = await stream_info.vid_info;
+    // double check here if for any reason the stream link is null then throw
+    if (def_stream.stream_link === null) {
+      throw({ status: 415, message: "youtube video not supported" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(error.status).json({ type: 'error', message: error.message });
@@ -157,24 +169,12 @@ app.get('/get_video', async (req, res) => {
 
   // we  make the call for the video using the double pipe so that its basically
   // the same as calling the original but w/o the CORS
-
-
-  console.log("video url piping request to:", def_stream.stream_link);
-
-
   const x = request(def_stream.stream_link);
   req.pipe(x)
     .on('response', function(response) {
-      console.log("piped resposne status_code:", response.statusCode, "     piped response content_length:", response.headers['content-length']) // 200
-      //console.log(response.headers) // 'image/png'
+      console.log("piped response status:", response.statusCode, ", piped response content_length:", response.headers['content-length']);
   });
-  x.pipe(res)
-    .on('response', function(response) {
-      console.log("pipe to page: ", response.headers)
-    })
-    .on('error', function(err) {
-      console.error(err) 
-    });
+  x.pipe(res);
 
   // after we make whatever request we need, update the database caches
   if (!stream_info.cached || !stream_info.cache_valid) {
@@ -203,7 +203,6 @@ app.get('/get_video', async (req, res) => {
     });
   }
 })
-
 
 function validate_user_token(user_token) {
   // this function uses a returned promise that is waited on by the caller because db call operation is asynchronous
@@ -355,9 +354,5 @@ app.post('/analyze_image', async (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
-/**
- * optimization 2:=  line 73 remove the harcoded values/json paths and make it acutally based on response values and stream quality
- * optimization 3:=  extract nested function definitions to global scope*/
 
  // export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/Saad/Desktop/projects/youtube_lu/my_server/key.json"
