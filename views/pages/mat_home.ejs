@@ -4,11 +4,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-    <title>Starter Template - Materialize</title>
+    <title>YouTube Video Screen Analyzer</title>
 
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!-- <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
 
@@ -19,16 +20,19 @@
             <a id="logo-container" href="#" class="brand-logo" style="display: inline-flex; align-items: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" height="95" viewBox="0 0 24 24" width="95">
                     <g>
-                        <path transform="matrix(0.6,0,0,0.6,8.5,7.4)" d="M -5.9 -3.9 h 24 v 24 H -5.9 z" fill="none"/>
-                        <path transform="matrix(0.6,0,0,0.6,8.5,7.4)" d="M -2.9 1.1 v 4 h 2 V 1.1 h 4 V -0.9 H -0.9 c -1.1 0 -2 0.9 -2 2 z m 2 10 H -2.9 v 4 c 0 1.1 0.9 2 2 2 h 4 v -2 H -0.9 v -4 z m 14 4 h -4 v 2 h 4 c 1.1 0 2 -0.9 2 -2 v -4 h -2 v 4 z m 0 -16 h -4 v 2 h 4 v 4 h 2 V 1.1 c 0 -1.1 -0.9 -2 -2 -2 z"/>
+                        <path transform="matrix(0.6,0,0,0.6,8.5,7.4)" d="M -5.9 -3.9 h 24 v 24 H -5.9 z" fill="none" />
+                        <path transform="matrix(0.6,0,0,0.6,8.5,7.4)"
+                            d="M -2.9 1.1 v 4 h 2 V 1.1 h 4 V -0.9 H -0.9 c -1.1 0 -2 0.9 -2 2 z m 2 10 H -2.9 v 4 c 0 1.1 0.9 2 2 2 h 4 v -2 H -0.9 v -4 z m 14 4 h -4 v 2 h 4 c 1.1 0 2 -0.9 2 -2 v -4 h -2 v 4 z m 0 -16 h -4 v 2 h 4 v 4 h 2 V 1.1 c 0 -1.1 -0.9 -2 -2 -2 z" />
                     </g>
                     <g transform="matrix(1,0,0,1,24,0)">
-                        <path transform="matrix(0.3,0,0,0.3,-13.2,11.1)" d="M -7.9 -8.5 h 24 v 24 H -7.9 z" fill="none"/>
-                        <path transform="matrix(0.3,0,0,0.3,-13.2,11.1)" d="M 4.1 -6.5 C -1.4 -6.5 -5.9 -2.1 -5.9 3.5 s 4.5 10 10 10 s 10 -4.5 10 -10 S 9.7 -6.5 4.1 -6.5 z m -2 14.5 v -9 l 6 4.5 l -6 4.5 z"/>
+                        <path transform="matrix(0.3,0,0,0.3,-13.2,11.1)" d="M -7.9 -8.5 h 24 v 24 H -7.9 z"
+                            fill="none" />
+                        <path transform="matrix(0.3,0,0,0.3,-13.2,11.1)"
+                            d="M 4.1 -6.5 C -1.4 -6.5 -5.9 -2.1 -5.9 3.5 s 4.5 10 10 10 s 10 -4.5 10 -10 S 9.7 -6.5 4.1 -6.5 z m -2 14.5 v -9 l 6 4.5 l -6 4.5 z" />
                     </g>
-                
+
                 </svg>
-            <!-- <span>YT Screen Analyzer</span> -->
+                <!-- <span>YT Screen Analyzer</span> -->
             </a>
             <ul class="right hide-on-med-and-down">
                 <li><a class="modal-trigger" href="#contact_modal">Contact</a></li>
@@ -47,7 +51,8 @@
             <br><br>
             <h1 class="header center orange-text">YouTube Video Screen Analyzer</h1>
             <div class="row center">
-                <h5 class="header col s12 light">Easily analyze a video screenshot or search the internet with it to find out more about what you are watching!</h5>
+                <h5 class="header col s12 light">Easily analyze a video screenshot or search the internet with it to
+                    find out more about what you are watching!</h5>
             </div>
             <br>
 
@@ -55,7 +60,8 @@
                 <form id="video_form" class="row valign-wrapper">
                     <div class="input-field col s10">
                         <input id="yt_url" name="yt_url" type="text" class="validate"
-                            pattern="(https:\/\/)?(www\.)?youtube\.com\/watch\?v=[a-zA-z0-9-]{11}.*" required>
+                            pattern="(https:)?\/?\/?((www|m)?\.?youtube\.com\/watch\?v=[a-zA-z0-9-]{11}.*|youtu\.be\/[a-zA-z0-9-]{11}.*)"
+                            required>
                         <label for="yt_url">Youtube URL</label>
                         <span class="helper-text" data-error="Invalid Youtube Url"
                             data-success="right">youtube.com/watch?v=ebeNeQFUMa0&t=62s</span>
@@ -72,40 +78,41 @@
         </div>
     </div>
 
-    <!-- Modal Structure / PLACING THIS AFTER THE MAIN CARD-->
+    <!-- CONTACT FORM MODAL -->
     <div id="contact_modal" class="modal">
         <div class="modal-content">
-        <h4>Contact</h4>
-        <p>Please use this form to address any issues or for general inquiries</p>
+            <h4>Contact</h4>
+            <p>Please use this form to address any issues or for general inquiries</p>
 
-        <div class="row">
-            <form id="contact_form" class="col s12">
-              <div class="row">
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">account_circle</i>
-                    <input id="contact_name" name="contact_name" type="text" class="validate">
-                    <label for="contact_name">Name</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">email</i>
-                    <input id="contact_email" name="contact_email" type="text" class="validate">
-                    <label for="contact_email">Email</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="input-field col s12">
-                  <i class="material-icons prefix">format_align_justify</i>
-                  <textarea id="contact_text" name="contact_text" class="materialize-textarea"></textarea>
-                  <label for="textarea1">Message</label>
-                </div>
-              </div>
-            </form>
-        </div>
+            <div class="row">
+                <form id="contact_form" class="col s12">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="contact_name" name="contact_name" type="text" class="validate">
+                            <label for="contact_name">Name</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">email</i>
+                            <input id="contact_email" name="contact_email" type="text" class="validate">
+                            <label for="contact_email">Email</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">format_align_justify</i>
+                            <textarea id="contact_text" name="contact_text" class="materialize-textarea"></textarea>
+                            <label for="textarea1">Message</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-            <button class="btn waves-effect waves-light modal-close" type="submit" name="action" form="contact_form">Send
+            <button class="btn waves-effect waves-light modal-close" type="submit" name="action"
+                form="contact_form">Send
                 <i class="material-icons right">send</i>
             </button>
         </div>
@@ -152,7 +159,6 @@
 
     </div>
 
-
     <!-- SCREENSHOT CANVAS AND ANALYSIS & DOWNLOAD BUTTON  -->
     <div class="container" id="canvas_actions" hidden>
         <!-- divider -->
@@ -161,7 +167,7 @@
                 <div class="divider"></div>
             </div>
         </div>
-        
+
         <div class="row center">
             <canvas id="canvas"></canvas>
         </div>
@@ -176,30 +182,35 @@
         </div>
     </div>
 
+    <!-- LOADING SIGN -->
+    <div class="container">
+        <div id="loading" class="row" hidden>
+            <div class="section">
+                <div class="row">
+                    <div class="divider"></div>
+                </div>
+            </div>
+
+            <div class="col s6 offset-s3">
+                <h5 class="center-align"> Loading...</h5>
+                <div class="progress">
+                    <div class="indeterminate"></div>
+                </div>
+                <div id="t" data-t="<%- t %>" hidden></div>
+            </div>
+        </div>
+    </div>
 
     <!-- ANALYSIS RESULTS -->
     <div id="analysis_parent_cont" class="container" hidden>
-
-        <!-- divider -->
         <div class="section">
             <div class="row">
                 <div class="divider"></div>
             </div>
         </div>
 
-
         <div class="section">
-
-            <div id="analysis_loading" class="row" hidden>
-                <div class="col s6 offset-s3">
-                    <h5 class="center-align"> Loading...</h5>
-                    <div class="progress">
-                        <div class="indeterminate"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="analysis" class="row" hidden>
+            <div id="analysis" class="row">
                 <ul class="collapsible">
                     <li class="webDetection">
                         <div class="collapsible-header"><i class="material-icons">search</i>Image Search Results</div>
@@ -243,7 +254,6 @@
         </div>
     </div>
 
-
     <!-- FEATURES CARD COLECTION -->
     <div class="container">
         <div class="section">
@@ -256,7 +266,8 @@
                         <h2 class="center light-blue-text"><i class="material-icons">subscriptions</i></h2>
                         <h5 class="center">Choose Any YouTube Video</h5>
 
-                        <p class="light">Choose from any YouTube's millions of videos. Easily get what you are looking for by 
+                        <p class="light">Choose from any YouTube's millions of videos. Easily get what you are looking
+                            for by
                             just pasting the video URL above and Go!</p>
                     </div>
                 </div>
@@ -266,8 +277,9 @@
                         <h2 class="center light-blue-text"><i class="material-icons">wallpaper</i></h2>
                         <h5 class="center">Capture the Video Screen</h5>
 
-                        <p class="light">Easily find the exact scene you want using a timestamp or if you dont remember, 
-                            watch the video to to find the part you want to know more about and press capture to screenshot what you are watching.
+                        <p class="light">Easily find the exact scene you want using a timestamp or if you dont remember,
+                            watch the video to to find the part you want to know more about and press capture to
+                            screenshot what you are watching.
                         </p>
                     </div>
                 </div>
@@ -277,7 +289,8 @@
                         <h2 class="center light-blue-text"><i class="material-icons">check_circle</i></h2>
                         <h5 class="center">View Analysis & Search Results</h5>
 
-                        <p class="light">Cant make sense of what you are seeing or want to learn more? Click on the Analyze button to find out which 
+                        <p class="light">Cant make sense of what you are seeing or want to learn more? Click on the
+                            Analyze button to find out which
                             show or movie a clip is from or any webpages that contain that same image! </p>
                     </div>
                 </div>
@@ -288,13 +301,16 @@
         <br><br>
     </div>
 
+    <!-- FOOTER -->
     <footer class="page-footer orange">
         <div class="container">
             <div class="row">
                 <div class="col l6 s12">
                     <h5 class="white-text">Company Bio</h5>
-                    <p class="grey-text text-lighten-4">Ever saw a clip or shot in a YouTube video and wanted to know what it was or where it was from? Now you 
-                        wont ever need to comment "what is ____ at 4:43?" Just analyze the video screen and find out!</p>
+                    <p class="grey-text text-lighten-4">Ever saw a clip or shot in a YouTube video and wanted to know
+                        what it was or where it was from? Now you
+                        won't ever need to comment "what is ____ at 4:43?" Just analyze the video screen and find out!
+                    </p>
 
                 </div>
                 <div class="col l3 s12">
@@ -303,42 +319,59 @@
                         <li><a class="white-text" href="#!">Fr (coming soon)</a></li>
                         <li><a class="white-text" href="#!">De (coming soon)</a></li>
                         <li><a class="white-text" href="#!">Ja (coming soon)</a></li>
-                        
+
                     </ul>
                 </div>
                 <div class="col l3 s12">
                     <h5 class="white-text">Connect</h5>
                     <ul>
-                        <li><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></li>
-                        <li><div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div></li>
+                        <li><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+                                data-show-count="false">Tweet</a>
+                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </li>
+                        <li>
+                            <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/"
+                                data-layout="button_count" data-size="small"><a target="_blank"
+                                    href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse"
+                                    class="fb-xfbml-parse-ignore">Share</a></div>
+                        </li>
                         <!-- <li><a class="white-text" href="#!">Contact</a></li> -->
                         <li><a class="white-text" href="#!">Policy</a></li>
-                        
+
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer-copyright">
             <div class="container">
-                Made with <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s6">
+                        Made with <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                    </div>
+                    <div class="col s6 right-align">
+                        Made by <a class="orange-text text-lighten-3" href="http://tctcraza.io">tctc-raza.io</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
 
     <!-- FOR FACEBOOK SHARE BUTTON SCRIPT -->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
+    <script async defer crossorigin="anonymous"
+        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
 
-    <script src="js/materialize.min.js"></script>
+    <!-- <script src="js/materialize.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="js/init.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
         // initialize materialize css components
         M.AutoInit();
 
-        //var token = ; // TODO <- server generated key thing to prevent cross site scripting
         var video_id = null;
         var img_blob = null;
         var img_ts = null;
+        var processing = null;
 
         $("#video_form").submit(function (event) {
             // we prevent the form from making a post request
@@ -348,16 +381,26 @@
             let canvas = document.getElementById('canvas');
             canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
             $("#analysis_parent_cont").hide();
+            $("#canvas_actions").hide();
             $(".analysis_category").empty();
 
             // get the youtube_url from the form
             let form_data = $(this).serializeArray();
             // the form will only contain one item at index 0
             let url = form_data[0].value
-            // the first index after the split will always be youtube so we know the second is query params
-            query_params = new URLSearchParams(url.split("watch?")[1]);
+            let video_id = null;
+            // the first index after the split will always be domain so we know the second is query params
+            if (url.includes("youtu.be")) {
+                //trim https:// off the front if its there
+                url.replace(/^(https:)?\/\/+/g, '');
+                video_id = url.split("/")[1];
+            } else {
+                query_params = new URLSearchParams(url.split("watch?")[1]);
+                video_id = query_params.get("v");
+            }
+
             // call the add_video function with the video id parameter retreived from the url
-            add_video(query_params.get("v"));
+            add_video(video_id);
         })
 
         function add_video(youtubeID) {
@@ -366,7 +409,7 @@
             // add a video container
             let vid_route_params = new URLSearchParams();
             vid_route_params.set("video_id", youtubeID);
-            vid_route_params.set("token", "<%- token %>");
+            vid_route_params.set("token", $("#t").data("t"));
             $("#video_cont").append(
                 `<video id="video" width="100%" class="responsive-video" src="/get_video?${vid_route_params.toString()}" controls> 
                 This browser does not support the HTML5 video element.
@@ -403,9 +446,9 @@
             // empty the analysis div in case content from a previous user action is there
             $("#analysis_parent_cont").hide();
             $(".analysis_category").empty();
-            // set cavas to leading
-            // DISABLE FOR NOW bcx of MATERIAL tings, may choose to use material loadder later on
-            //$("#canvas_loader_frame").show();
+            // hide the canvas(in case theres already a canvas there) and show loading for canvas
+            $("#canvas_actions").hide();
+            $("#loading").show();
 
             // get the form input and see which option user picked
             let form_data = $(this).serializeArray();
@@ -451,8 +494,6 @@
         })
 
         function draw_frame() {
-            // before drawing hide the loading frame
-            // $("#canvas_loader_frame").hide();   see line 349 MATERIAL tings
             // get the video and draw its current frame onto the canvas
             let canvas = document.getElementById('canvas');
             let video = document.getElementById('video');
@@ -467,6 +508,7 @@
                 $("#down_link").attr('href', link);
             });
             // show the download screenshot and reverse search buttons once we have the image drawn
+            $("#loading").hide();
             $("#canvas_actions").show();
         }
 
@@ -477,15 +519,14 @@
                 return;
             }
             // hide the previous analysis and show the loading sign
-            $("#analysis_parent_cont").show();
-            $("#analysis").hide();
-            $("#analysis_loading").show();
+            $("#analysis_parent_cont").hide();
+            $("#loading").show();
 
             // build the query params for the post route
             let analysis_params = new URLSearchParams();
             analysis_params.set("screen_ts", img_ts);
             analysis_params.set("video_id", video_id);
-            analysis_params.set("token", "<%- token %>");
+            analysis_params.set("token", $("#t").data("t"));
 
             // create and send the HTTP request with the image data
             var req = new XMLHttpRequest();
@@ -493,8 +534,10 @@
             req.onload = function (event) {
                 // check the response status and if its good pass the results to a function that will show them on the webpage
                 if (this.status != 200) {
-                    alert("analysis failed please try again");
+                    alert("Analysis failed, Please reload the page and try again");
                     console.error("analysis failed");
+                    $("#loading").hide();
+
                 } else {
                     render_vision_results(JSON.parse(this.response));
                 }
@@ -509,19 +552,23 @@
         function add_list_to_markup(elem, obj_array, data_prop, initial_amount) {
             // declare an append counter
             let append_counter = 0;
+            let hyperlink;
+
+            if (data_prop === "url") {
+                hyperlink = true;
+            } else {
+                hyperlink = false;
+            }
 
             // for each obj in the array 
             obj_array.forEach(obj => {
                 let data = obj[data_prop];
                 // if the data is not blank/empty, append the data_prop value from the obj on the dom element
                 if (data != "") {
-                    // for the first n items up to initial amount, show them
-                    if (append_counter <= initial_amount) {
-                        elem.append("<p>" + data + "</p>");
-                    } else {
-                        // and the rest append the elment as hidden
-                        elem.append("<p hidden>" + data + "</p>");
-                    }
+                    // show the first n items up to initial amount
+                    elem.append(`<p ${((append_counter > initial_amount) ? "hidden" : '')}> 
+                        ${(hyperlink ? `<a href="${data}" target="_blank"> ${data} </a>` : `${data}`)} </p>`);
+
                     // increment the counter
                     append_counter++;
                 }
@@ -537,9 +584,8 @@
             console.log(vision_resp);
             // first empty the div from any content that may be previously
             $(".analysis_category").empty();
-            $("#analysis_loading").hide();
-            $("#analysis ul li").show();  // also show any divs that may have been hidden from a previous calls results
-            $("#analysis").show();
+            // show divs that may have been hidden from a previous analysis
+            $("#analysis ul li").show();
 
             // loop over all the properties of the vision response object
             for (var prop in vision_resp) {
@@ -547,16 +593,17 @@
 
                     // check if the current property has a div associated to it in the markup
 
-                    let elem = $("li." + prop);
+                    let elem = $(`li.${prop}`);
                     if (elem.length != 0) {
 
                         // if it does then we populate div with data ow hide the div
                         if (vision_resp[prop].length === 0) {
                             // hide the div
+                            console.log(elem, "should be hidden");
                             elem.hide();
                         } else {
                             // populate with data
-                            elem = $("div." + prop);
+                            elem = $(`div.${prop}`);
                             // this is the default key for getting data from any category array inside the vision resposne
                             let data_prop = "description";
 
@@ -577,7 +624,7 @@
                                     // if the subcategory is length 0 then dont do anything
                                     if (vision_resp[prop][web_category].length != 0) {
                                         elem.append('<h5>' + web_category + '</h5>');
-                                        let category_div = $("<div>", {id: web_category + "_cont", "class": "analysis_subcategory"});
+                                        let category_div = $("<div>", { id: `${web_category}_cont`, "class": "analysis_subcategory" });
                                         elem.append(category_div);
                                         // call the function to put the list content into the dom element
                                         add_list_to_markup(category_div, vision_resp[prop][web_category], data_prop, 5);
@@ -595,6 +642,10 @@
                     }
                 }
             }
+
+            // show all the neccessary divs once the info has been loaded
+            $("#loading").hide();
+            $("#analysis_parent_cont").show();
         }
 
         function toggle_ts(radio_ele) {
@@ -615,11 +666,11 @@
             // get form data and prepare ajax request with it
             let form_data = $(this).serialize();
             console.log(form_data);
-            $.post('/contact_submit?token=<%- token %>', $(this).serialize())
-             .done(function (data){
-                // show toast to user
-                M.toast({html: 'Message Delivered'})
-             })
+            $.post(`/contact_submit?token=${$("#t").data("t")}`, $(this).serialize())
+                .done(function (data) {
+                    // show toast to user
+                    M.toast({ html: 'Message Delivered' })
+                })
         })
 
 
