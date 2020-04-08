@@ -1,19 +1,16 @@
 runtime: nodejs12
 
-# env_variables:
-#  GOOGLE_APPLICATION_CREDENTIALS: "/home/razasaad_1999/yt_frame_search/key.json"
 env: flex
-
 instance_class: F1
 
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:
 # https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
-manual_scaling:
-  instances: 1
+# manual_scaling:
+#   instances: 1
 
-resources:
-  cpu: 1
-  memory_gb: 0.5
-  disk_size_gb: 1
+# resources:
+#   cpu: 1
+#   memory_gb: 0.5
+#   disk_size_gb: 1
