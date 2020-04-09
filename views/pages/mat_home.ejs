@@ -52,12 +52,14 @@
             <div class="row center">
                 <h5 class="header col s12 light">Easily analyze a video screenshot or search the internet with it to
                     find out more about what you are watching!</h5>
+                    <!-- Reverse image search any scene from a youtube video or analyze it with the power of computer 
+                        vision find out more about what you are watching! -->
             </div>
             <br>
 
             <div class="row center" style="margin-bottom: 0px;">
                 <form id="video_form" class="row valign-wrapper">
-                    <div class="input-field col s10">
+                    <div class="input-field col s9 m10">
                         <input id="yt_url" name="yt_url" type="text" class="validate"
                             pattern="(https:)?\/?\/?((www|m)?\.?youtube\.com\/watch\?v=[a-zA-z0-9-]{11}.*|youtu\.be\/[a-zA-z0-9-]{11}.*)"
                             required>
@@ -65,7 +67,7 @@
                         <span class="helper-text" data-error="Invalid Youtube Url"
                             data-success="right">youtube.com/watch?v=ebeNeQFUMa0&t=62s</span>
                     </div>
-                    <div class="col s2">
+                    <div class="col s3 m2">
                         <button class="btn waves-effect waves-light" type="submit" name="action">Go
                             <i class="material-icons right">send</i>
                         </button>
@@ -121,6 +123,12 @@
 
     <!-- VIDEO AND SCREEN CAP CONTROLS -->
     <div id="video_cont_parent" class="container" hidden>
+        <div class="section">
+            <div class="row">
+                <div class="divider"></div>
+            </div>
+        </div>
+        
         <div class="section">
             <div id="video_cont">
             </div>
@@ -258,7 +266,21 @@
     <!-- FEATURES CARD COLECTION -->
     <div id="features" class="container">
         <div class="section">
-
+            <div class="row center">
+                <!-- <div class="icon-block"><h2 class="center light-blue-text"> --><i class="large material-icons light-blue-text">search</i>
+                <h6 class="center" style="line-height: 2rem;">
+                    Ever watched a clip or shot in a YouTube video and wanted to know
+                        what it was or where it was from? Or saw something  that seemed familiar but didn't know how to find it anymore? Now you
+                        won't ever need to comment "what is ____ at 4:43?" Follow the steps below and and find out!
+                    </h6>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="divider"></div>
+        </div>
+        
+        <div class="section">
             <!--   Icon Section   -->
             <div class="row">
 
@@ -279,8 +301,8 @@
                         <h5 class="center">Capture the Video Screen</h5>
 
                         <p class="light">Easily find the exact scene you want using a timestamp or if you dont remember,
-                            watch the video to to find the part you want to know more about and press capture to
-                            screenshot what you are watching.
+                            watch the video to find the part you want to know more about and press capture to
+                            screenshot what you see.
                         </p>
                     </div>
                 </div>
@@ -297,7 +319,6 @@
                 </div>
 
             </div>
-
         </div>
         <br><br>
     </div>
@@ -306,15 +327,15 @@
     <footer class="page-footer orange">
         <div class="container">
             <div class="row">
-                <div class="col l6 s12">
+                <!-- <div class="col l6 s12">
                     <h5 class="white-text">Company Bio</h5>
                     <p class="grey-text text-lighten-4">Ever saw a clip or shot in a YouTube video and wanted to know
                         what it was or where it was from? Now you
                         won't ever need to comment "what is ____ at 4:43?" Just analyze the video screen and find out!
                     </p>
 
-                </div>
-                <div class="col l3 s12">
+                </div> -->
+                <div class="col l6 s12">
                     <h5 class="white-text">Languages</h5>
                     <ul>
                         <li><a class="white-text" href="#!">Fr (coming soon)</a></li>
@@ -323,7 +344,7 @@
 
                     </ul>
                 </div>
-                <div class="col l3 s12">
+                <div class="col l6 s12">
                     <h5 class="white-text">Connect</h5>
                     <ul>
                         <li><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"

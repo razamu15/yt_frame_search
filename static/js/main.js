@@ -70,8 +70,7 @@ function add_video(youtubeID) {
 
     // set an error events listener that will send an alert to the user if something goes wrong
     $("#video").on("error", function (event) {
-        console.error(event);
-        alert("something went wrong in video playback please try again");
+        alert("Sorry, this video is not supported for playback.");
         $(this).get(0).pause();
     })
     // set event listener to execute on timeupdate. This gets invoked every ~250ms or so
@@ -362,5 +361,5 @@ $("#down_link").on('click', function (event) {
 })
 
 function scroll_to_features() {
-    document.getElementById("features").scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    document.getElementById("features").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
 }
