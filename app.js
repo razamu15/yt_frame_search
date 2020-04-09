@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   // generate the token and render the response to the user first
   let unique_token = uuid.v4();
-  res.render('pages/mat_home', { t: unique_token });
+  res.render('pages/main', { t: unique_token });
   // now store the token in firestore
   let docRef = db.collection('api_tokens').add({
     token: unique_token,
@@ -150,7 +150,7 @@ function get_video_link(video_id) {
 app.get('/get_video', async (req, res) => {
   // assert that we have the required query params for this request
   if (!req.query.hasOwnProperty("token") || !req.query.hasOwnProperty("video_id")) {
-    return res.status(400).json({ type: 'error', message: "missing required params" });
+    return res.sendStatus(400);//.json({ type: 'error', message: "missing required params" });
   }
   // wrap both awaits in the same try catch
   let stream_info;
@@ -164,7 +164,7 @@ app.get('/get_video', async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    return res.status(error.status).json({ type: 'error', message: error.message });
+    return res.sendStatus(error.status);//.json({ type: 'error', message: error.message });
   }
 
   // we  make the call for the video using the double pipe so that its basically
