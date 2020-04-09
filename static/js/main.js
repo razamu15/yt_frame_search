@@ -180,7 +180,7 @@ function draw_frame() {
     processing = false;
 }
 
-$("#search_btn").click(function (event) {
+$(".search_btns").click(function (event) {
     if (check_set_processing()) {
         alert("Please wait untill previous action is finished.");
         return;
@@ -356,7 +356,10 @@ $("#down_link").on('click', function (event) {
     if (download_counter > 10) {
         event.preventDefault();
         $(this).attr("href", "#");
+        $(this).removeAttr('download');
+        $(this).hide();
         alert("You cannot download more than 10 video frames");
+        $(this).off("click");
     }    
 })
 
