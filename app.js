@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
-const uuid = require('uuid')
+const uuid = require('uuid');
 
 const config = {
   gcp_project_id: 'plasma-buckeye-268306',
