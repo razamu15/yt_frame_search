@@ -102,7 +102,6 @@ function retrieve_video_link(video_id) {
                 if (format_obj.qualityLabel === "720p" || link === null) {
                   
                   link = format_obj.url;
-                  console.log(format_obj.url);
                   // now the format obj can sometimes contain a cipher property which then needs to be parsed again
                   if (format_obj.cipher) {
                     let cipher_obj = new URLSearchParams(format_obj.cipher);
