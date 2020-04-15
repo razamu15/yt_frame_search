@@ -59,9 +59,9 @@ app.get('/', (req, res) => {
   });
 })
 
-app.get('/policy', (req, res) => {
-  res.render('pages/policy');
-})
+// app.get('/policy', (req, res) => {
+//   res.render('pages/policy');
+// })
 
 app.post('/contact_submit', (req, res) => {
   // get the info from the body and pop it into firestore

@@ -38,10 +38,11 @@ $("#video_form").submit(function (event) {
     let url = form_data[0].value
     let video_id = null;
     // the first index after the split will always be domain so we know the second is query params
-    if (url.includes("youtu.be")) {
-        //trim https:// off the front if its there
-        url.replace(/^(https:)?\/\/+/g, '');
-        video_id = url.split("/")[1];
+    dot_be = url.indexOf("youtu.be/");
+    if (dot_be != -1) {
+        // add 9 to get to the end of the substring youtu.be/ and then 11 for the actual vid id after that
+        dot_be += 9;
+        video_id = url.substring(dot_be, dot_be + 11);
     } else {
         query_params = new URLSearchParams(url.split("watch?")[1]);
         video_id = query_params.get("v");
@@ -77,10 +78,10 @@ function add_video(youtubeID) {
     // use this to accumulate a value and make sure the user is not watching the entire video on the page
     $('#video').on('timeupdate',function() {
         play_duration++;
-        if (play_duration === 720) { // 240 for 1 min
-            alert("You have been watching for 3 mins. Please note that this app is not intended for watching youtube videos. If you continue watching you will be redirected in 2 mins");
-        } else if (play_duration === 1200) {
-            alert("You have been watching for 5 mins. Please note that this app is not intended for watching youtube videos. You will redirected to YouTube now.");
+        if (play_duration === 480) { // 240 for 1 min
+            alert("You have been watching for 2 mins. Please note that this app is not intended for watching Youtube videos. If you continue watching you will be redirected in 1 min.");
+        } else if (play_duration === 720) {
+            alert("You have been watching for 3 mins. Please note that this app is not intended for watching Youtube videos. You will redirected to YouTube now.");
             window.location.replace(`https://youtube.com/watch?v=${video_id}`);
         }
     })
@@ -188,7 +189,7 @@ $(".search_btns").click(function (event) {
 
     // first we check to make sure the image blob in not null
     if (img_blob === null || img_ts === null) {
-        alert("you need to capture and image first before analyzing it");
+        alert("You need to capture an image first before analyzing it");
         processing = false;
         return;
     }
@@ -209,7 +210,7 @@ $(".search_btns").click(function (event) {
     req.onload = function (event) {
         // check the response status and if its good pass the results to a function that will show them on the webpage
         if (this.status != 200) {
-            alert("Analysis failed, Please reload the page and try again");
+            alert("Search & Analysis failed. Please reload the page and try again");
             console.error("analysis failed");
             $("#loading").hide();
             processing = false;
@@ -287,6 +288,12 @@ function render_vision_results(vision_resp) {
                     if (prop === "webDetection") {
                         // deal with web detection specially - loop through the 4 subcategories
                         let web_catgs = ["bestGuessLabels", "webEntities", "pagesWithMatchingImages", "visuallySimilarImages"]; // full/partial/MatchingImages
+                        let web_catgs_text = {
+                            bestGuessLabels: "Best Guess Labels",
+                            webEntities: "Web Entities",
+                            pagesWithMatchingImages: "Pages With Matching Images",
+                            visuallySimilarImages: "Visually Similar Images"
+                        };
                         web_catgs.forEach(web_category => {
                             // define speacial data prop
                             if (web_category === "bestGuessLabels") {
@@ -299,7 +306,7 @@ function render_vision_results(vision_resp) {
 
                             // if the subcategory is length 0 then dont do anything
                             if (vision_resp[prop][web_category].length != 0) {
-                                elem.append('<h5>' + web_category + '</h5>');
+                                elem.append('<h5>' + web_catgs_text[web_category] + '</h5>');
                                 let category_div = $("<div>", { id: `${web_category}_cont`, "class": "analysis_subcategory" });
                                 elem.append(category_div);
                                 // call the function to put the list content into the dom element
