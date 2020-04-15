@@ -1,7 +1,11 @@
-runtime: nodejs12
+runtime: nodejs
 
 env: flex
 instance_class: F1
+
+# automatic_scaling:
+#   max_instances: 2 
+#   target_cpu_utilization: 0.9
 
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
