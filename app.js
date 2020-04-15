@@ -92,10 +92,11 @@ function retrieve_video_link(video_id) {
           } else {
             let vid_streams = JSON.parse(vid_info.get("player_response"));
 
-            if (vid_streams.playabilityStatus.status === 'UNPLAYABLE') {
+            if (vid_streams.playabilityStatus.status === "ERROR") {
+              reject({ status: 422, message: "removed youtube video" });
+            } else if (vid_streams.playabilityStatus.status === 'UNPLAYABLE') {
               reject({ status: 415, message: "youtube video not supported" });
             } else {
-            
               let link = null;
               // loop through the formats array and get the link
               vid_streams.streamingData.formats.forEach( format_obj => {
@@ -103,9 +104,11 @@ function retrieve_video_link(video_id) {
                   
                   link = format_obj.url;
                   // now the format obj can sometimes contain a cipher property which then needs to be parsed again
+                  
                   if (format_obj.cipher) {
                     let cipher_obj = new URLSearchParams(format_obj.cipher);
-                    link = cipher_obj.get('url') ;
+                    console.log("cipher_url: ", cipher_obj.get('url'));
+                    link = null;
                   }
                 }
               })
